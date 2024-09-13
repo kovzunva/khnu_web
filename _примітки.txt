@@ -1,0 +1,16 @@
+cd c:\OSPanel\domains\localhost\whattoread
+
+php artisan make:controller НазваКонтролера
+php artisan make:model НазваМоделі
+php artisan backup:run
+
+cd c:\OSPanel\domains\localhost\whattoread
+npm run dev (автоматична компіляція файлів з ресурсів в паблік)
+npm run build (кінцева компіляція файлів з ресурсів в паблік)
+
+«»
+
+- якщо не відправляється пост, то проблема може бути в відсутності CSRF-TOKEN
+- якщо робиш імпорт, а весь час одна й та сама книга, то забула стерти $url = "ця книга"
+- якщо прокрутка стоїть всередині блоку, то десь всередині треба дати "position: relative;", інакше буде якась жесть
+- "Page expired" - це відсутність csrf-токену
