@@ -287,6 +287,10 @@
     flex-direction: column;
  }
 
+ .to-bottom{
+  margin-top: auto;
+ }
+
  .inline { display: inline; }
  .inline-block { display: inline-block; }
 
@@ -302,6 +306,9 @@
   gap: 1rem;
  }
 
+ .gap-8{
+  gap: 8px;
+ }
  .gap-10{
   gap: 10px;
  }
