@@ -6,7 +6,7 @@
     @if ($works) 
         <hr class="mb-4">
         @foreach($works as $work)
-            <a href="" class="">
+            <a href="{{ route('work',$work->id) }}" class="">
                 <div class="with-image-box row mb-3">	
                     <div class="col-sm-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center">
                         <div class="rel with-image-box-imgs">					
@@ -29,5 +29,62 @@
                 </div>
             </a>
         @endforeach
+    @endif
+    
+    @if ($review)
+        <hr class="mb-4 mt-5">
+        <a href="{{route('work',$review->w_id)}}" class="">        
+            <h4>Останній відгук ({{$review->work_avtors}} «{{$review->work}}»)</h4>
+        </a>     
+        <div class="item-box mb-3 rel" data-review-id="{{$review->id}}">
+            <div class="row">
+                <div class="col">
+                    @include('components.user-item',['user' => $review->user]),
+                    {{$review->created_at}} {{$review->is_public? '':'(чорновик)'}}
+
+                    {{-- Текст відгуку --}}
+                    <div class="to-expand mt-1">							
+                            @foreach (explode("\n", $review->text) as $paragraph)
+                                {!! nl2br(e($paragraph)) !!}
+                            @endforeach
+                    </div>
+                </div>
+
+                <div class="col-auto ">
+                    <div class="flex-column h-100">	
+                        <div class="col text-center">												
+                            <button class="expand-button">
+                                <img src="{{asset('/svg/angle-double-down.svg')}}" class="small-icon">
+                            </button>	
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    @endif
+
+    @if ($blog)
+        <hr class="mb-4 mt-5">
+        <a href="{{route('blog',$blog->id)}}" class="">
+            <h4>Останній блог</h4>
+            <div class="light-box mb-3">
+                <h3 class="me-5">{{ $blog->title }}</h3>
+                
+                <div class="pb-2">
+                    {!! Str::limit(strip_tags($blog->content), 200) !!}
+                    @if (strlen(strip_tags($blog->content)) > 200)
+                        <span>Читати більше</span>
+                    @endif
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @include('components.user-item',['user' => $blog->user]),
+                        <span>{{ $blog->created_at->format('d.m.Y H:i:s') }}</span>
+                        <b class="ms-1">{{ $blog->category? '#'.$blog->category->name:'' }}</b>
+                    </div>
+                </div>
+            </div>
+        </a>	
     @endif
 @endsection	
