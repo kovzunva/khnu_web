@@ -7,7 +7,6 @@ return [
         ['text' => 'Видавництва', 'url' => '/publishers', 'icon' => 'fa-solid fa-book'],
         ['text' => 'Блоги', 'url' => '/blogs', 'icon' => 'fa-solid fa-scroll'],
         ['text' => 'Користувачі', 'url' => '/profiles', 'icon' => 'fa-solid fa-users'],
-        ['text' => 'Форуми', 'url' => '/forums', 'icon' => 'fa-solid fa-message'],
         ['text' => 'Довідка', 'url' => '/faqs'],
     ],
 
@@ -17,8 +16,6 @@ return [
         ['text' => 'Відгуки', 'url' => '/profile/reviews', 'icon' => 'fa-solid fa-house'],
         ['text' => 'Полички', 'url' => '/profile/shelves', 'icon' => 'fa-solid fa-house'],
         ['text' => 'Блоги', 'url' => '/profile/blogs', 'icon' => 'fa-solid fa-feather'],
-        ['text' => 'Чати', 'url' => '/profile/chats', 'icon' => 'fa-solid fa-book'],
-        ['text' => 'Форуми', 'url' => '/profile/forums', 'icon' => 'fa-solid fa-scroll'],
         ['text' => 'Зворотний зв\'язок', 'url' => '/profile/user-requests', 'icon' => 'fa-solid fa-users'],
         ['text' => 'Майстерня', 'url' => '/content-maker', 'icon' => 'fa-solid fa-scroll'],
     ],
@@ -27,7 +24,6 @@ return [
         ['text' => 'Адмінка', 'url' => '/adminka'],
         ['text' => 'Категорії', 'url' => '/adminka/categories'],
         ['text' => 'Класифікатор', 'url' => '/adminka/classificator'],
-        // ['text' => 'Експертна система', 'url' => '/admin/expert-system'],
 
         ['text' => 'Персони', 'url' => '/adminka/persons'],
         ['text' => 'Твори', 'url' => '/adminka/works'],
