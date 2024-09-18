@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ isset($title)? $title.' - ':'' }}Щопочитайка</title>
+    <title>{{ isset($title) && $title!=null && $title!=''? $title.' - ':'' }}Щопочитайка</title>
     <link rel="icon" type="image/png" href="{{ asset('images/Лого.png') }}">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
     @vite(['resources/css/my_style.css', 'resources/js/most_used.js', 'resources/js/client.js'])   
@@ -28,7 +28,7 @@
                     <a href="/" class="col text-center icon-btn">
                         <img src="{{asset('/svg/home-light.svg')}}" class="small-icon">
                     </a>
-                    <a href="" class="col text-center icon-btn rel">
+                    <a href="{{ route('notifications') }}" class="col text-center icon-btn rel">
                         <img src="{{asset('/svg/notification-light.svg')}}" class="small-icon">
                         @if (Auth::user() && Auth::user()->hasUnreadNotifications())
                             <div class="has-notifications">{{Auth::user()->unreadNotificationsCount()}}</div>
@@ -55,6 +55,7 @@
 
                 {{-- Головне меню --}}
                 <nav class="hide menu overlay-menu" id="mobile-main-menu">
+                    @include('components.mobile-menu-header')
                     @foreach(config('menu.menu_links') as $link)
                         <a href="{{ $link['url'] }}" class="">{{ $link['text'] }}</a>
                         <div class="line"></div>
@@ -66,6 +67,7 @@
                 </nav>
                 {{-- Поточне меню --}}
                 <nav class="hide menu overlay-menu" id="mobile-this-menu">
+                    @include('components.mobile-menu-header')
                     @if (isset($links))    
                         @foreach($links as $link)
                             <a href="{{ $link['url'] }}" class="">{{ $link['text'] }}</a>
@@ -76,6 +78,7 @@
                 </nav>
                 {{-- Профільне меню --}}
                 <nav class="hide menu overlay-menu" id="mobile-profile-menu">
+                    @include('components.mobile-menu-header')
                     @foreach(config('menu.profile_links') as $link)
                         <a href="{{ $link['url'] }}" class="">{{ $link['text'] }}</a>
                         <div class="line"></div>
@@ -142,7 +145,7 @@
                         <footer class="text-center">
                             @if (auth()->check())
                                 Вітаємо, {{Auth::user()->name}}!
-                                <a href="{{ route('logout') }}"
+                                <a href="{{ route('logout') }}" class="underline"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Вихід
                                 </a>
@@ -154,10 +157,19 @@
                                     <a href="{{ route('user-request.form') }}">Форма зворотного зв'язку</a>
                                 </div> --}}
                             @else
-                                <a class="me-2" href="{{ route('login') }}">Вхід</a> |
-                                <a class="" href="{{ route('register') }}">Рестрація</a>
+                                <a class="underline me-2" href="{{ route('login') }}">Вхід</a> |
+                                <a class="underline" href="{{ route('register') }}">Рестрація</a>
                             @endif
-                            <p>© 2024 Щопочитайка </p>
+                            <div class="d-flex gap-1 content-center mt-1 mb-3">
+                                <div>© 2024 Щопочитайка</div>
+                                <div>
+                                    @php
+                                        $currentLocale = App::currentLocale();
+                                    @endphp
+                                    <a href="{{ route('set-locale', 'uk') }}" @if($currentLocale == 'uk') class="underline" @endif>укр</a> |
+                                    <a href="{{ route('set-locale', 'en') }}" @if($currentLocale == 'en') class="underline" @endif>en</a>
+                                </div>
+                            </div>
                         </footer>
                     </div>
                 </aside>
