@@ -44,13 +44,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col text-center">
-                    <hr>
-                    <hr>
-                    <a href="{{ route('recommendations') }}" class="base-btn ">Отримати рекомендації</a>
-                    <hr>
-                    <hr>
-                </div>
             </div>
         </section>
 

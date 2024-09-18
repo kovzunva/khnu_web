@@ -10,11 +10,7 @@
 			</div>
 
 			{{-- Сортування --}}
-			@include('components.sort')	
-
-			<div class="col-auto pl-1 pr-1">					
-				<a href="{{ route('recommendations') }}" class="base-btn ">Рекомендації книг</a>					
-			</div>			
+			@include('components.sort')			
 		</div>
 	</form>
 	<hr>
