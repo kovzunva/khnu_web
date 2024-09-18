@@ -28,6 +28,15 @@ use App\Http\Controllers\FAQController;
 
 Auth::routes(['verify' => true]);
 
+Route::get('/set-locale/{locale}', function (string $locale) {
+    if (! in_array($locale, ['uk', 'en'])) {
+        abort(400);
+    }
+    app()->setLocale($locale);
+    session()->put('locale', $locale);
+    return redirect()->back();
+})->name('set-locale');
+
 // Лише адміни
 Route::prefix('adminka')->middleware(['auth', 'permissions:admin'])->group(function () {
     Route::get('', [AdminController::class, 'basic'])->name('adminka');
