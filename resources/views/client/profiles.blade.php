@@ -25,9 +25,7 @@
 				@if (auth()->check())						
 					<div class="col-auto align-center">
 						<b>
-							@if (auth()->user()->id!=$profile->id)								
-								Орієнтирність: {{ $profile->orienter }}
-							@else
+							@if (auth()->user()->id==$profile->id)
 								(це ви, якщо що)
 							@endif
 						</b>

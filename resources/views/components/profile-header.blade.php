@@ -10,7 +10,7 @@
             @else
                 <div class="work-without-img square text-42">{{mb_substr($profile->name,0,1)}}</div>
             @endif
-            @if (auth()->user() && auth()->user()->id = $profile->id)
+            @if (auth()->user() && auth()->user()->id == $profile->id)
                 <a href="{{ route('profile.editForm', $profile->id) }}">
                     <img src="{{asset('/svg/edit.svg')}}" class="icon admin-icon">
                 </a>

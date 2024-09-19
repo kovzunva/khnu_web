@@ -7,6 +7,9 @@
     </div>
     @endif
     <p>{{$profile->about}}</p>
+    @if (!$profile->about)
+        <p>Користувач шифрується і нічого про себе не розказує.</p>
+    @endif
 
     @if ($profile->id==auth()->user()->id)        
         <section class="small-section">
