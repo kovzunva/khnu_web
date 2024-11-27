@@ -19,6 +19,11 @@ class Comment extends Model
         return $this->belongsTo(Blog::class, 'item_id');
     }
 
+    public function chat()
+    {
+        return $this->belongsTo(Chat::class, 'item_id');
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class, 'answer_to');

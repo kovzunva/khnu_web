@@ -67,6 +67,52 @@ class User extends Authenticatable implements MustVerifyEmail
         return true;
     }
 
+    // Відстежуються
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'user_to_follow_id');
+    }
+
+    // Відстежувачі
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_to_follow_id', 'user_id');
+    }
+
+    // Чи відстежується
+    public function isFollowing($otherUser)
+    {
+        return Follower::where('user_id', $this->id)
+            ->where('user_to_follow_id', $otherUser->id)
+            ->exists();
+    }
+
+    // Чи є орієнтиром
+    public function isOrientator($otherUserId)
+    {
+        $userId = $this->id;
+        $query = "SELECT COUNT(*) AS count 
+                FROM orientator 
+                WHERE user_id = :userId 
+                AND user_orientator_id = :otherUserId";
+        $result = DB::select($query, ['userId' => $userId, 'otherUserId' => $otherUserId]);
+        $count = $result[0]->count;
+        return $count > 0;
+    }
+
+    public function orientators()
+    {
+        $orientators = DB::table('orientator as o')
+            ->join('users as u', 'o.user_orientator_id', '=', 'u.id')
+            ->where('user_id', $this->id)
+            ->select('u.id', 'u.name')
+            ->get()
+            ->toArray();
+
+        return User::hydrate($orientators);
+    }
+
+
     // Надіслати сповіщення
     public function myNotify($message,$link=null,$icon=null,$item_id=null)
     {
@@ -93,6 +139,51 @@ class User extends Authenticatable implements MustVerifyEmail
         return Notification::where('user_id', $this->id)
             ->whereNull('read_at')
             ->count();
+    }
+
+    // Надсилання сповіщень відстежувачам
+    public function sendNotificationsToFollowers($message, $link = null, $icon = null, $item_id = null)
+    {
+        $currentUser = auth()->user();
+        $followers = $currentUser->followers;
+
+        // Чи не було в відстежувачів такого сповіщення
+        $existingNotifications = Notification::whereIn('user_id', $followers->pluck('id'))
+            ->where('link', $link)
+            ->where('item_id', $item_id)
+            ->get();
+
+        // Якщо немає такого сповіщення, надсилання кожному відстежувачу
+        foreach ($followers as $follower) {
+            $followerId = $follower->id;
+
+            $notificationExists = $existingNotifications->where('user_id', $followerId)->isNotEmpty();
+
+            if (!$notificationExists) {
+                $follower->myNotify($message,$link,$icon,$item_id);
+            }
+        }
+    }
+
+    // Видалення неактуальних сповіщень у відстежувачів
+    public function deleteNotification($icon, $item_id)
+    {
+        Notification::where('user_id', $this->id)
+            ->where('icon', $icon)
+            ->where('item_id', $item_id)
+            ->delete();
+    }
+
+    // Видалення неактуальних сповіщень у відстежувачів
+    public function deleteFollowersNotifications($icon, $item_id)
+    {
+        $followerIds = $this->followers()->pluck('id')->toArray();
+
+
+        Notification::whereIn('user_id', $followerIds)
+            ->where('icon', $icon)
+            ->where('item_id', $item_id)
+            ->delete();
     }
 
     // Забанити
