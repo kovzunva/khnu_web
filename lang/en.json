@@ -1,0 +1,22 @@
+{
+    "Редагувати": "Edit",
+    "Видалити": "Delete",
+    "Ви впевнені, що хочете видалити блог «:title»?": "Are you sure you want to delete the blog «:title»?",
+    "Введіть причину видалення:": "Enter the reason for deletion:",
+    "Коментарі": "Comments",
+    "Вподобати": "Like",
+    "Зняти вподобайку": "Unlike",
+    "Ще нема коментарів": "No comments yet",
+    "Опублікувати коментар": "Publish comment",
+    "Заповніть поле": "Fill in the field",
+    
+    "Форма редагування блогу": "Blog Editing Form",
+    "Форма додавання блогу": "Blog Adding Form",
+    "Назва": "Title",
+    "Категорія": "Category",
+    "Інше": "Other",
+    "Текст": "Text",
+    "Зберегти": "Save",
+    "Зберегти та переглянути": "Save and view",
+    "Переглянути": "View"
+}
