@@ -7,11 +7,15 @@ use Illuminate\Support\Facades\File;
 
 class ImageService
 {
-    public static function saveImg($img, $folder, $id){
+    public static function saveImg($img, $folder, $id, $pref = null){
         $img_path = $img;
-        $img_id = $id;
+        $img_id = $pref.$id;
         $u_id = Auth::id(); // Зверніть увагу на використання Auth
         $Err_img = '';
+
+        // Встановлюємо максимальні розміри зображення
+        $maxWidth = 512;
+        $maxHeight = 512;
 
         // Перевірка, чи це картинка
         try{
@@ -32,17 +36,23 @@ class ImageService
                 }
                 
                 // Перевірка розміру та масштабування
-                if ($height > 1200) {
-                    $newHeight = 1200;
-                    $newWidth = ($width / $height) * $newHeight;
+                if ($width > $maxWidth || $height > $maxHeight) {
+                    // Розраховуємо нові пропорційні розміри
+                    $ratio = min($maxWidth / $width, $maxHeight / $height);
+                    $newWidth = (int)($width * $ratio);
+                    $newHeight = (int)($height * $ratio);
+
+                    // Масштабуємо зображення до нових розмірів
                     $newImage = imagecreatetruecolor($newWidth, $newHeight);
                     imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+                    // Заміна оригінального зображення на змінене
                     imagedestroy($image);
                     $image = $newImage;
                 }
 
                 // Збереження картинки
-                $sid=str_pad($img_id, 8, "0", STR_PAD_LEFT); //формуємо маску для пошуку завантажених картинок
+                $sid=str_pad($img_id, 8, "0", STR_PAD_LEFT); // формуємо маску для пошуку завантажених картинок
                 $pattern='images\\'.$folder.'\\'.$sid.'*.*';
                 $max='0';        
                 foreach (glob($pattern) as $filename) { //визначаємо порядковий індекс нової картинки
@@ -63,8 +73,8 @@ class ImageService
         catch (\Exception $e) {return 'Файл ['.substr($img_path,0,30).'...] не є дійсним зображенням.';}
     }
 
-    public static function getImgs($folder,$id){
-        $img_id = $id;
+    public static function getImgs($folder,$id,$pref=null){
+        $img_id = $pref.$id;
         $sid=str_pad($img_id, 8, "0", STR_PAD_LEFT); //формуємо маску для пошуку існуючих ілюстрацій для книги
         $pattern='images/'.$folder.'/'.$sid.'*.*';
         $i=0;
@@ -76,8 +86,8 @@ class ImageService
         return $imgs;
     }
 
-    public static function getImg($folder,$id,$num=0){
-        $img_id = $id;
+    public static function getImg($folder,$id,$num=0,$pref=null){
+        $img_id = $pref.$id;
         $sid=str_pad($img_id, 8, "0", STR_PAD_LEFT); //формуємо маску для пошуку картинок
         $pattern='images/'.$folder.'/'.$sid.'*.*';
         $i=0;
