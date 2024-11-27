@@ -306,7 +306,7 @@
 									</div>
 								@endif
 
-								<div class="mb-1">{{ \Carbon\Carbon::parse($review->created_at)->format('d.m.y H:i') }}</div>
+								{{-- <div class="mb-1">{{ \Carbon\Carbon::parse($review->created_at)->format('d.m.y H:i') }}</div> --}}
 								<div>{{$review->is_public? '':'(чорновик)'}}</div>								
 							</div>
 							<div class="content-part">
@@ -429,7 +429,7 @@
 							<div class="user-part">
 								@include('components.user-item-big',['user' => $quote->user])
 
-								<div class="mb-1">{{ \Carbon\Carbon::parse($quote->created_at)->format('d.m.y H:i') }}</div>							
+								{{-- <div class="mb-1">{{ \Carbon\Carbon::parse($quote->created_at)->format('d.m.y H:i') }}</div>							 --}}
 							</div>
 							<div class="content-part">
 								<div class="with-spoilers" id="quote_text_{{ $quote->id }}">
