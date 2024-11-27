@@ -1,3 +1,13 @@
+import $ from 'jquery';
+window.jQuery = $;
+window.$ = $;
+
+import { CustomModal } from './custom-classes';
+const modal = new CustomModal('#overlay-modal');
+
+import { showToast } from './custom-classes';
+import { IconTypes } from './custom-classes';
+
 // Порядковий номер елемента вмісту видання
 function GetLastItemNumber(){
     let blocks = $(".el-insert, .el-inserted");
@@ -166,20 +176,25 @@ $(document).ready(function() {
     });
     $("#designer_edition").on("select2:select", function(e) {
         let selectedItem = e.params.data;
-        let isExisting = $("#designer_container input[name='add_designer_id[]'][value='" + selectedItem.id + "']").length > 0 ||
-                      $("#designer_container input[name='designer[]'][value='" + selectedItem.id + "']").length > 0;
+        AddDesignerPost(selectedItem.id,selectedItem.text,selectedItem.item_name);
+    });
+
+});
+function AddDesignerPost(id,text,item_name){
+    if (item_name && item_name!="undefined"){
+        let isExisting = $("#designer_container input[name='add_designer_id[]'][value='" + id + "']").length > 0 ||
+                      $("#designer_container input[name='designer[]'][value='" + id + "']").length > 0;
         if (!isExisting) {
             let newElement = $('<div class="el-insert input-group mb-1">' +
-                '<input readonly type="text" class="hide" name="add_designer_id[]" value="' + selectedItem.id + '">' +
-                '<input readonly type="text" class="form-control input-with-btt" value="' + selectedItem.text + '">' +
-                '<input type="text" class="form-control input-with-btt" name="add_designer[]" value="' + selectedItem.item_name + '">' +
+                '<input readonly type="text" class="hide" name="add_designer_id[]" value="' + id + '">' +
+                '<input readonly type="text" class="form-control input-with-btt" value="' + text + '">' +
+                '<input type="text" class="form-control input-with-btt" name="add_designer[]" value="' + item_name + '">' +
                 '<button type="button" class="btt-with-input btn-remove-el-insert">Видалити</button>' +
                 '</div>');
             $("#designer_container").append(newElement);
         }
-    });
-
-});
+    }
+}
 
 // Автозаповнення при пошуку ілюстратора в редагуванні видання  
 $(document).ready(function() {  
@@ -222,20 +237,25 @@ $(document).ready(function() {
     });
     $("#illustrator_edition").on("select2:select", function(e) {
         let selectedItem = e.params.data;
-        let isExisting = $("#illustrator_container input[name='add_illustrator_id[]'][value='" + selectedItem.id + "']").length > 0 ||
-                      $("#illustrator_container input[name='illustrator[]'][value='" + selectedItem.id + "']").length > 0;
+        AddIllustratorPost(selectedItem.id,selectedItem.text,selectedItem.item_name);
+    });
+
+});
+function AddIllustratorPost(id,text,item_name){
+    if (item_name && item_name!="undefined"){
+        let isExisting = $("#illustrator_container input[name='add_illustrator_id[]'][value='" + id + "']").length > 0 ||
+                      $("#illustrator_container input[name='illustrator[]'][value='" + id + "']").length > 0;
         if (!isExisting) {
             let newElement = $('<div class="el-insert input-group mb-1">' +
-                '<input readonly type="text" class="hide" name="add_illustrator_id[]" value="' + selectedItem.id + '">' +
-                '<input readonly type="text" class="form-control input-with-btt" value="' + selectedItem.text + '">' +
-                '<input type="text" class="form-control input-with-btt" name="add_illustrator[]" value="' + selectedItem.item_name + '">' +
+                '<input readonly type="text" class="hide" name="add_illustrator_id[]" value="' + id + '">' +
+                '<input readonly type="text" class="form-control input-with-btt" value="' + text + '">' +
+                '<input type="text" class="form-control" name="add_illustrator[]" value="' + item_name + '">' +
                 '<button type="button" class="btt-with-input btn-remove-el-insert">Видалити</button>' +
                 '</div>');
             $("#illustrator_container").append(newElement);
         }
-    });
-
-});
+    }
+}
 
 // Автозаповнення при пошуку твору в редагуванні видання  
 $(document).ready(function() {  
@@ -380,18 +400,6 @@ function AddWorkPost(id,text,item_name,avtor=null,translator=null){
         AddTranslatorPost(selectedItem.id,selectedItem.text,selectedItem.item_name,itemNumber);
     });
 }
-function AddTranslatorPost(id,text,item_name,itemNumber){
-    $(this).closest(".insert-item").find(".translator_container").append(`            
-        <div class="el-insert input-group mb-1">
-            <input readonly type="hidden" name="add_item[`+itemNumber+`][translator][`+id+`][tr_id]" 
-            value="`+id+`">
-            <input readonly type="text" class="form-control input-with-btt" value="`+text + `">
-            <input type="text" class="form-control input-with-btt" 
-            name="add_item[`+itemNumber+`][translator][`+id+`][name]" value="`+item_name+`">
-            <button type="button" class="btt-with-input btn-remove-el-insert">Видалити</button>
-        </div>
-        `);
-}
 
 // Автозаповнення при пошуку перекладача в редагуванні вмісту видання  
 $(document).ready(function() {
@@ -453,6 +461,18 @@ $(document).ready(function() {
         });
     });
 });
+function AddTranslatorPost(id,text,item_name,itemNumber){
+    $(this).closest(".insert-item").find(".translator_container").append(`            
+        <div class="el-insert input-group mb-1">
+            <input readonly type="hidden" name="add_item[`+itemNumber+`][translator][`+id+`][tr_id]" 
+            value="`+id+`">
+            <input readonly type="text" class="form-control input-with-btt" value="`+text + `">
+            <input type="text" class="form-control input-with-btt" 
+            name="add_item[`+itemNumber+`][translator][`+id+`][name]" value="`+item_name+`">
+            <button type="button" class="btt-with-input btn-remove-el-insert">Видалити</button>
+        </div>
+        `);
+}
 
 // Пошук по випадному списку
 function searchAndSetOption(listId, searchText) {
@@ -478,302 +498,126 @@ function searchAndSetOption(listId, searchText) {
 }
 
 // Індикатор завантаження
-function ShowLoading(btn){
-    $('#'+btn).addClass('with-spinner');
+function showLoading(){
+    let overlay = $("#overlay-loading");
+    overlay.fadeIn();
 }
-function HideLoading(btn){
-    $('#'+btn).removeClass('with-spinner');
+function hideLoading(){
+    let overlay = $("#overlay-loading");
+    overlay.fadeOut();
 }
 
 //
 // Імпорт
+let edition;
 $(document).ready(function() {
-    $("#btn_url_import").click(function() {
-        let url = $("#url_import").val();
+    $("#btn_url_import").click(async function() {
         $("#error_import").hide();
-        // $("#loading-indicator").show();
-        ShowLoading('btn_url_import');
+        showLoading();
         clearFieldsAndContainers();  
+
+        // взяти дані
+        let url = $("#url_import").val();
+        edition = await takeEditionData(url);  
+        if (!edition) return;   
         
-        $.ajax({
+        // заповнити початкові поля і перевірити чи нема такого виданння
+        fillFields(edition); 
+        let haveToContinue = await checkEdition(edition);
+        if (!haveToContinue) return;
+
+        // видавництво
+        if(edition.publisher){
+            edition.publisher_ = await checkPublisher(edition.publisher);
+            if (!edition.publisher_) await publisherModal(edition.publisher);
+            if (edition.publisher_) AddPublisherPost(edition.publisher_.id,edition.publisher_.name);
+        }
+
+        // автор
+        if(edition.avtor){
+            edition.avtor_ = await checkPerson(edition.avtor);
+            if (!edition.avtor_) await personModal(edition.avtor, 1, 0, 0, 0, 'avtor');
+            if (edition.avtor_) AddAvtorPost(edition.avtor_.id,edition.avtor_.name+' (id = '+edition.avtor_.id+')',edition.avtor_.name);
+        }
+
+        // перекладач
+        if (edition.translator){
+            edition.translator_ = await checkPerson(edition.translator);
+            if (!edition.translator_) await personModal(edition.translator, 0, 1, 0, 0, 'translator');
+        }
+
+        // дизайнер
+        if(edition.designer){
+            edition.designer_ = await checkPerson(edition.designer);
+            if (!edition.designer_) await personModal(edition.designer, 0, 0, 1, 0, 'designer');
+            if (edition.designer_) AddIllustratorPost(edition.designer_.id,edition.designer_.name+' (id = '+edition.designer_.id+')',edition.designer_.name);
+        }
+
+        // ілюстратор
+        if(edition.illustrator){
+            edition.illustrator_ = await checkPerson(edition.illustrator);
+            if (!edition.illustrator_) await personModal(edition.illustrator, 0, 0, 0, 1, 'illustrator');
+            if (edition.illustrator_) AddIllustratorPost(edition.illustrator_.id,edition.illustrator_.name+' (id = '+edition.illustrator_.id+')',edition.illustrator_.name);
+        }
+
+        // твір
+        if(edition.avtor_ && edition.name){
+            edition.work_ = await checkWork(edition.name, edition.avtor_);
+            if (!edition.work_) await workModal(edition.name, edition.avtor_, edition.about);
+            if (edition.work_) AddWorkPost(edition.work_.id,edition.work_.name+' (id = '+edition.work_.id+')',edition.work_.name, edition.avtor_.name, edition.translator_?.name);
+        }
+        
+        // Випадні списки
+        if (edition.language && !searchAndSetOption('language_select',edition.language)) {
+            $("#import_add").append('<p>Потрібно додати мову: '+edition.language+'</p>');
+        }
+        if (edition.type_of_cover && !searchAndSetOption('type_of_cover_select',edition.type_of_cover)){
+            $("#import_add").append('<p>Потрібно додати тип обкладинки: '+edition.type_of_cover+'</p>');
+        }
+    
+        // Картинка
+        if (edition.img !== '') {  
+            let containerImg = document.getElementById('container_img');
+            let imgPasses = document.getElementById('img_passes');   
+            containerImg.innerHTML=''; 
+            imgPasses.innerHTML='';
+            PrintNewImgEdit(edition.img, containerImg, imgPasses);
+        }
+
+        hideLoading();
+        console.log(edition);
+
+    });
+});
+
+// Запит на сервер для парсингу
+async function takeEditionData(url) {
+    try {
+        const response = await $.ajax({
             type: "POST",
             url: "/content-maker/import/edition",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            data: { url: url },
-            success: function(data) {        
-                // $("#loading-indicator").hide();
-                if (data.error){
-                    $("#error_import").html(data.error);
-                    $("#error_import").show();   
-                }      
-                else {
-                    console.log(data);
-                    let edition = data.edition;
-                    ImportPrePrint(edition);
-                }
-                HideLoading('btn_url_import'); 
-            },
-            error: function(error) {
-                $("#error_import").show();        
-                // $("#loading-indicator").hide();
-                HideLoading('btn_url_import');
-            }
+            data: { url: url }
         });
-    });
-});
-// Виведення даних імпорту
-function ImportPrePrint(edition){
-    $("input[name='name']").val(edition.name);
-    $("input[name='year']").val(edition.year);
-    $("input[name='pages']").val(edition.pages);
-    $("input[name='isbn']").val(edition.isbn);
-    $("input[name='format']").val(edition.format);
-    $("textarea[name='about']").val(edition.about);
 
-    $("#import_add").html('');    
-
-    // Чи нема ще такого видання
-    $.ajax({
-        type: "GET",
-        url: "/api/search/editions",
-        data: {
-            name: edition.name,
-            year: edition.year,
-        },
-        success: function(data) {
-            if (data && data.length > 0) {
-                if (confirm("Видання такого року з такою назвою вже знайдено в базі. Все одно продовжити? "+data)) {
-                    ImportPrint(edition);
-                }
-            }
-            else {
-                ImportPrint(edition);
-            }
-            // $("#loading-indicator").hide();
-            HideLoading('btn_url_import');
-        },
-        error: function(error) {
-            // $("#loading-indicator").hide();
-            HideLoading('btn_url_import');
+        if (response.error) {
+            $("#error_import").html(response.error);
+            $("#error_import").show();
+            return null;
         }
-    });
-
-}
-function ImportPrint(edition){
-    // Перекладач
-    let translatorName = edition.translator;
-    $.ajax({
-        type: "GET",
-        url: "/api/search/translators",
-        data: {
-            term: translatorName
-        },
-        success: function(data) {
-            if (data.length > 0 && translatorName && translatorName!=undefined) {
-                console.log(translatorName);
-                // Якщо немає, створюємо форму для додавання
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
-                let formHtml = `
-                    <form action="" method="POST" class="validate-form">
-                        <input type="hidden" name="_token" value="${csrfToken}">
-                        <hr>
-                        <div class="mb-3">
-                            <label for="persons" class="form-label">Додайте персону</label>
-                            <div class="error-text hide error">Виникла помилка з додаванням персони</div>
-                            <div class="success-text hide success">Персону додано успішно</div>
-                            <div class="error-text hide error_name">Заповніть це поле</div>
-                            <div class="input-group mb-1">
-                                <input type="text" class="input-with-btt enter_btn" name="name" placeholder="Введіть персону" value="${translatorName}">
-                                <button class="btt-with-input btn_person_add_tr" type="button"
-                                data-to-delete="true">Додати</button>
-                            </div>
-                            <div class="mb-3 at_least_one person_type">
-                                <div class="error-text hide error_person_type">Виберіть хоч один варіант</div>
-                                <input type="checkbox" name="is_avtor" id="is_avtor" value="1">
-                                <label for="is_avtor" class="form-label">Автор</label>
-                                <input type="checkbox" name="is_translator" id="is_translator" value="1" checked>
-                                <label for="is_translator" class="form-label">Перекладач</label>
-                                <input type="checkbox" name="is_designer" id="is_designer" value="1">
-                                <label for="is_designer" class="form-label">Дизайнер</label>
-                                <input type="checkbox" name="is_illustrator" id="is_illustrator" value="1">
-                                <label for="is_illustrator" class="form-label">Ілюстратор</label>
-                            </div>
-                        </div>
-                    </form>
-                `;
-                
-
-                $("#import_add").append(formHtml);
-                $(".btn_person_add_tr").click(function() { personQuickAddBtn($(this)); });
-            }
-        },
-        error: function(error) {
-            // Обробка помилки
+        else {
+            return response.edition;
         }
-    });
-
-    // Автор (+ в ньому твір)
-    let authorName = edition.avtor;
-    $.ajax({
-        type: "GET",
-        url: "/api/search/avtors",
-        data: {
-            term: authorName
-        },
-        success: function(data) {
-            // Автор є
-            if (data.length > 0) {
-                let avtor = data[0];
-                AddAvtorPost(avtor.id,avtor.name+' (id = '+avtor.id+')',avtor.name,edition.work,edition.about);
-                // Твір
-                let workName = edition.name;
-                $.ajax({
-                    type: "GET",
-                    url: "/api/search/work-with-avtor",
-                    data: {
-                        name: workName,
-                        avtor: authorName,
-                    },
-                    success: function(data) {
-                        if (data.length > 0) {
-                            let work = data[0];
-                            // Перекладач
-                            if (translatorName)
-                            $.ajax({
-                                type: "GET",
-                                url: "/api/search/translators",
-                                data: {
-                                    term: translatorName
-                                },
-                                success: function(translator) {
-                                    if (translator.length > 0) AddWorkPost(work.id,work.name+' (id = '+work.id+')',work.name,authorName,translator[0]);
-                                    else AddWorkPost(work.id,work.name+' (id = '+work.id+')',work.name,authorName);
-                                },
-                                error: function(error) {
-                                    // Обробка помилки
-                                }
-                            });
-                            else
-                            AddWorkPost(work.id,work.name+' (id = '+work.id+')',work.name,authorName);
-                        }
-                        else {
-                            workQuickAddForm(workName,avtor,edition.about);
-                        }
-                    },
-                    error: function(error) {
-                        // Обробка помилки
-                    }
-                });
-            }
-            // Якщо автора немає, створюємо форму для додавання автора
-            else {
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
-                let formHtml = `
-                    <form action="" method="POST" class="validate-form">
-                        <input type="hidden" name="_token" value="${csrfToken}">
-                        <hr>
-                        <div class="mb-3">
-                            <label for="persons" class="form-label">Додайте персону</label>
-                            <div class="error-text hide error">Виникла помилка з додаванням персони</div>
-                            <div class="success-text hide success">Персону додано успішно</div>
-                            <div class="error-text hide error_name">Заповніть це поле</div>
-                            <div class="input-group mb-1">
-                                <input type="text" class="input-with-btt enter_btn" name="name" placeholder="Введіть персону" value="${authorName}">
-                                <button class="btt-with-input btn_person_add_av" type="button"
-                                data-to-delete="true">Додати</button>
-                            </div>
-                            <div class="mb-1">
-                                <input type="text" name="alt_name" placeholder="Альтернативне ім'я">
-                            </div>
-                            <div class="mb-3 at_least_one person_type">
-                                <div class="error-text hide error_person_type">Виберіть хоч один варіант</div>
-                                <input type="checkbox" name="is_avtor" id="is_avtor" value="1" checked>
-                                <label for="is_avtor" class="form-label">Автор</label>
-                                <input type="checkbox" name="is_translator" id="is_translator" value="1">
-                                <label for="is_translator" class="form-label">Перекладач</label>
-                                <input type="checkbox" name="is_designer" id="is_designer" value="1">
-                                <label for="is_designer" class="form-label">Дизайнер</label>
-                                <input type="checkbox" name="is_illustrator" id="is_illustrator" value="1">
-                                <label for="is_illustrator" class="form-label">Ілюстратор</label>
-                            </div>
-                        </div>
-                    </form>
-                `;
-                
-
-                $("#import_add").append(formHtml);
-                $(".btn_person_add_av").click(function() { personQuickAddBtn($(this)); });
-            }
-        },
-        error: function(error) {
-            // Обробка помилки
-        }
-    });
-
-    // Видавництво
-    let publisherName = edition.publisher;
-    $.ajax({
-        type: "GET",
-        url: "/api/search/publishers",
-        data: {
-            term: publisherName
-        },
-        success: function(data) {
-            if (data.length > 0) {
-                let publisher = data[0];
-                AddPublisherPost(publisher.id,publisher.name);
-            }
-            else {
-                // Якщо немає, створюємо форму для додавання
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');                
-                let formHtml = `
-                    <form action="" method="POST" class="validate-form">
-                        <input type="hidden" name="_token" value="${csrfToken}">
-                        <hr>
-                        <div class="mb-3 mt-1">
-                            <label for="publishers" class="form-label">Додайте видавництво</label>
-                            <div class="error-text hide error">Виникла помилка з додаванням</div>
-                            <div class="success-text hide success">Додано успішно</div>
-                            <div class="error-text hide error_name">Заповніть це поле</div>
-                            <div class="input-group mb-4">
-                                <input type="text" class="input-with-btt enter_btn" name="name" placeholder="Введіть видавництво"
-                                value="${publisherName}">
-                                <button class="btt-with-input btn_publisher_add" type="button"
-                                data-to-delete="true">Додати</button>
-                            </div>
-                        </div>
-                    </form>
-                `;
-                
-
-                $("#import_add").append(formHtml);
-                $(".btn_publisher_add").click(function() { publisherQuickAddBtn($(this)); });
-            }
-        },
-        error: function(error) {
-            // Обробка помилки
-        }
-    });    
-
-    // Випадні списки
-    if (edition.language && !searchAndSetOption('language_select',edition.language)) {
-        $("#import_add").append('<p>Потрібно додати мову: '+edition.language+'</p>');
     }
-    if (edition.type_of_cover && !searchAndSetOption('type_of_cover_select',edition.type_of_cover)){
-        $("#import_add").append('<p>Потрібно додати тип обкладинки: '+edition.type_of_cover+'</p>');
-    }
-
-    // Картинка
-    if (edition.img !== '') {  
-        let containerImg = document.getElementById('container_img');
-        let imgPasses = document.getElementById('img_passes');   
-        containerImg.innerHTML=''; 
-        imgPasses.innerHTML='';
-        PrintNewImgEdit(edition.img, containerImg, imgPasses);
+    catch (error) {
+        $("#error_import").show();
+        hideLoading();
+        throw error;
     }
 }
+
 // Очистка полів і контейнерів
 function clearFieldsAndContainers() {
     $("input[name='name']").val('');
@@ -788,6 +632,292 @@ function clearFieldsAndContainers() {
     $("#publisher_edition_container").html('');
     $("#item_container").html('');
 }
+
+// Заповнення полів
+function fillFields(edition){
+    $("input[name='name']").val(edition.name);
+    $("input[name='year']").val(edition.year);
+    $("input[name='pages']").val(edition.pages);
+    $("input[name='isbn']").val(edition.isbn);
+    $("input[name='format']").val(edition.format);
+    $("textarea[name='about']").val(edition.about);
+    $("#import_add").html('');   
+
+}
+
+// перевірка чи нема такого видання
+async function checkEdition(edition) {
+    try {
+        const data = await $.ajax({
+            type: "GET",
+            url: "/api/search/editions",
+            data: {
+                name: edition.name,
+                year: edition.year,
+            }
+        });
+
+        if (data && data.length > 0) {
+            hideLoading();
+            let confirmationMessage = "Видання такого року з такою назвою вже знайдено в базі. Все одно продовжити?";
+            return new Promise((resolve) => {
+                modal.confirm("Потенційний дубль", confirmationMessage, (result) => {
+                    resolve(result);
+                });
+            });
+        }
+        else {
+            return true;
+        }
+
+    }
+    catch (error) {
+        console.error('Помилка при перевірці видання:', error);
+        hideLoading();
+        return false;
+    }
+}
+
+// перевірка чи нема такої персони
+async function checkPerson(personName, type = "persons") {
+    showLoading();
+    try {
+        const data = await $.ajax({
+            type: "GET",
+            url: "/api/search/"+type,
+            data: {
+                term: personName
+            }
+        });
+
+        if (data && data.length > 0) {
+            let person = data[0];
+            return person;
+        }
+        else {
+            return null;
+        }
+
+    }
+    catch (error) {
+        console.error('Помилка при пошуку персони:', error);
+        hideLoading();
+        return false;
+    }
+}
+
+// модальне вікно з додаванням персони
+async function personModal(personName, is_avtor, is_translator, is_designer, is_illustrator, fieldType){
+    return new Promise((resolve, reject) => {
+        hideLoading();
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');
+        let formHtml = `
+            <form action="" method="POST" class="validate-form">
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <div class="error-text hide error">Виникла помилка з додаванням персони</div>
+                <div class="success-text hide success">Персону додано успішно</div>
+                <div class="error-text hide error_name">Заповніть це поле</div>
+                <div class="mb-3">
+                    <input type="text" class="enter-btn" name="name" placeholder="Введіть персону" value="${personName}">
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="alt_name" placeholder="Альтернативне ім'я">
+                </div>
+                <div class="mb-3 at_least_one person_type">
+                    <div class="error-text hide error_person_type">Виберіть хоч один варіант</div>
+                    <input type="checkbox" name="is_avtor" id="is_avtor" value="1" ${is_avtor? "checked" : null}>
+                    <label for="is_avtor" class="form-label">Автор</label>
+                    <input type="checkbox" name="is_translator" id="is_translator" value="1" ${is_translator? "checked" : null}>
+                    <label for="is_translator" class="form-label">Перекладач</label>
+                    <input type="checkbox" name="is_designer" id="is_designer" value="1" ${is_designer? "checked" : null}>
+                    <label for="is_designer" class="form-label">Дизайнер</label>
+                    <input type="checkbox" name="is_illustrator" id="is_illustrator" value="1" ${is_illustrator? "checked" : null}>
+                    <label for="is_illustrator" class="form-label">Ілюстратор</label>
+                </div>                
+                <div class='text-end'>
+                    <button class="base-btn btn_person_add_av" type="button" data-field-type="${fieldType}" data-to-delete="true">Додати</button>
+                </div>
+            </form>
+        `;
+
+        modal.modal("Додайте персону", formHtml);
+        $(".btn_person_add_av").click(async function() { 
+            await personQuickAddBtn($(this));
+            resolve();
+        });
+        $(".modal-close").click(function() {
+            modal.hideModal();
+            resolve();
+        });
+    });
+}
+
+// перевірка чи нема такого видавництва
+async function checkPublisher(name){
+    showLoading();
+    try {
+        const data = await $.ajax({
+            type: "GET",
+            url: "/api/search/publishers",
+            data: {
+                term: name
+            }
+        });
+
+        if (data && data.length > 0) {
+            hideLoading();
+            let publisher = data[0];
+            return publisher;
+        }
+        else {
+            hideLoading();
+            return null;
+        }
+
+    }
+    catch (error) {
+        console.error('Помилка при пошуку видавництва:', error);
+        hideLoading();
+        return false;
+    }
+}
+
+// модальне вікно з додаванням видавництва
+async function publisherModal(publisherName){
+    return new Promise((resolve, reject) => {
+        hideLoading();
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');                
+        let formHtml = `
+            <form action="" method="POST" class="validate-form">
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <div class="error-text hide error">Виникла помилка з додаванням</div>
+                <div class="success-text hide success">Додано успішно</div>
+                <div class="error-text hide error_name">Заповніть це поле</div>
+                <input type="text" class="enter-btn" name="name" placeholder="Введіть видавництво" value="${publisherName}">
+                <div class="text-end mt-3">
+                    <button class="base-btn btn_publisher_add" type="button">Додати</button>
+                </div>
+            </form>
+        `;
+
+        modal.modal("Додайте видавництво", formHtml);
+        $(".btn_publisher_add").click(async function() { 
+            await publisherQuickAddBtn($(this));
+            resolve();
+        });
+        $(".modal-close").click(function() {
+            modal.hideModal();
+            resolve();
+        });
+    });
+}
+
+// перевірка чи нема такого твору
+async function checkWork(name, avtor) {
+    try {
+        const data = await $.ajax({
+            type: "GET",
+            url: "/api/search/work-with-avtor",
+            data: {
+                name: name,
+                avtor: avtor,
+            }
+        });
+
+        if (data && data.length > 0) {
+            hideLoading();
+            let work = data[0];
+            return work;
+        }
+        else {
+            hideLoading();
+            return null;
+        }
+
+    }
+    catch (error) {
+        console.error('Помилка при перевірці твору:', error);
+        hideLoading();
+        return false;
+    }
+}
+
+// модальне вікно з додаванням твору
+async function workModal(workName,avtor,about){
+    return new Promise((resolve, reject) => {
+        hideLoading();
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');     
+        let genres = '';
+        genres_for_work_item.forEach(genre => {
+            genres += `<li data-value="${genre.id}">${genre.name}</li>`;
+        });           
+        let formHtml = `                  
+            <form action="" method="POST" class="validate-form width-700">
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <div class="error-text hide error_name">Заповніть це поле</div>
+                <input type="text" class="mb-1" name="name" placeholder="Введіть твір" value="${workName}">
+                <div class="mb-1">
+                    <input type="text" name="alt_name" placeholder="Альтернативна назва">
+                </div>
+                <div class="mb-1">
+                    <div class="base-select">
+                        <div class="select-box">
+                            <span class="selected-option d-flex align-items-center">Виберіть жанр</span>
+                            <ul class="options hide">
+                            <li data-value="">Інше</li>
+                            ${genres}
+                            </ul>
+                        </div>
+                        <input type="hidden" name="genre_id">
+                    </div>                      
+                </div>
+                <div class="work-avtors mt-1">
+                    <div class="el-insert mb-1">
+                        <input readonly type="text" class="hide" name="avtor_id[]" value="${avtor.id}">
+                        <input readonly type="text" class="form-control"  value="${avtor.name} (id = ${avtor.id})">
+                    </div>
+                </div>
+                <textarea class="mt-1" name="anotation" rows="6" placeholder="Введіть анотацію">${about}</textarea>
+                <div class='text-end mt-3'>
+                    <button class="base-btn btn_work_add" type="button" data-to-delete="true">Додати</button>
+                </div>
+            </form>
+        `;    
+
+        modal.modal("Додайте твір", formHtml);
+        $(".btn_work_add").click(async function() { 
+            await workQuickAddBtn($(this));
+            resolve();
+        });
+
+        $(".modal-close").click(function() {
+            modal.hideModal();
+            resolve();
+        });
+
+        $(".base-select").on("click", ".selected-option", function(event) {
+            console.log('click')
+            event.stopPropagation();
+            var $baseSelect = $(this).closest(".base-select");
+            $baseSelect.find(".options").toggleClass("hide");
+          });
+        
+          $(".base-select").on("click", ".options li", function() {
+              var $baseSelect = $(this).closest(".base-select");
+              var selectedValue = $(this).data("value");
+              $baseSelect.find("input[type='hidden']").val(selectedValue);
+              $baseSelect.find(".selected-option").text($(this).text());
+              $baseSelect.find(".options").addClass("hide");
+          });
+      
+          $(document).on('click', function(event) {
+            if (!$(event.target).closest('.options').length) {
+                $('.options').addClass('hide');
+            }
+          });
+    });
+}
+
 // Завантаження картинки
 let img_index = 0;
 function PrintNewImgEdit(imageURL, containerImg, imgPasses){
@@ -855,6 +985,7 @@ function PrintNewImgEdit(imageURL, containerImg, imgPasses){
     imgPathInput.name = 'imgs[]';
     imgPasses.appendChild(imgPathInput);
 }
+
 // Перевірка радіобатонів
 function CheckRadioButtons(){
     let imgPasses = document.getElementById('img_passes');
@@ -867,81 +998,73 @@ function CheckRadioButtons(){
 }
 
 // Швидке додавання персони
-function personQuickAdd(formData,parentForm,to_delete=false) {
-    // $("#loading-indicator").show();
-    ShowLoading('btn_url_import');
-    parentForm.find(".error").hide();
-    parentForm.find(".success").hide();
-    $.ajax({
-        type: "POST",
-        url: "/content-maker/person/quick-add",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: formData,
-        success: function(data) {
-            if (data.error) {
-                parentForm.find(".error").text(data.error).show();
-            }
-            else if (data.success) {
-                if (to_delete){
-                    parentForm.remove();
+async function personQuickAdd(formData,parentForm,fieldType) {
+    return new Promise((resolve, reject) => {
+        parentForm.find(".error").hide();
+        parentForm.find(".success").hide();
+        $.ajax({
+            type: "POST",
+            url: "/content-maker/person/quick-add",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: formData,
+            success: function(data) {
+                if (data.error) {
+                    parentForm.find(".error").text(data.error).show();
                 }
-                else {
-                    parentForm.find(".success").text(data.success).show();
-                    parentForm.find('[name="name"]').val('')
+                else if (data.success) {
+                    modal.hideModal();
+                    hideLoading();
+                    showToast("Персону додано успішно",IconTypes.SUCCESS);
+                    if (fieldType === 'avtor') {
+                        edition.avtor_ = data.person;
+                    } else if (fieldType === 'translator') {
+                        edition.translator_ = data.person;
+                    } else if (fieldType === 'designer') {
+                        edition.designer_ = data.person;
+                    } else if (fieldType === 'illustrator') {
+                        edition.illustrator_ = data.person;
+                    }   
+                    resolve();             
                 }
+            },
+            error: function(error) {
+                parentForm.find(".error").show();
+                reject(error);
             }
-        },
-        error: function(error) {
-            parentForm.find(".error").show();
-        }
+        });
     });
 }
-function personQuickAddBtn(btn){
+async function personQuickAddBtn(btn){
+    // let toDelete = btn.data("to-delete");
+    // parentForm.find(".error_name").hide();
+    // parentForm.find(".error_person_type").hide();
     let parentForm = btn.closest('form');
-    let toDelete = btn.data("to-delete");
     let formData = parentForm.serialize();
-    parentForm.find(".error_name").hide();
-    parentForm.find(".error_person_type").hide();
-    if (parentForm.find('[name="name"]').val()=="") {
+    let personName = parentForm.find('[name="name"]').val();
+    let fieldType = btn.data('field-type');
+
+    if (personName=="") {
         parentForm.find(".error_name").show();
     }
-    else if (
-        formData.indexOf('is_avtor=') === -1 &&
-        formData.indexOf('is_designer=') === -1 &&
-        formData.indexOf('is_illustrator=') === -1 &&
-        formData.indexOf('is_translator=') === -1
-    )
+    else if ( formData.indexOf('is_avtor=') === -1 && formData.indexOf('is_designer=') === -1 && formData.indexOf('is_illustrator=') === -1 && formData.indexOf('is_translator=') === -1 )
     {
         parentForm.find(".error_person_type").show();
     }
     else {           
-        // $("#loading-indicator").show();
-        ShowLoading('btn_url_import');
-
-        $.ajax({
-            type: "GET",
-            url: "/api/search/persons",
-            data: {
-                term: parentForm.find('[name="name"]').val()
-            },
-            success: function(data) {
-                if (data && data.length > 0) {
-                    if (confirm("Персону з таким ім'ям вже знайдено в базі. Все одно додати її?")) {
-                        personQuickAdd(formData,parentForm,toDelete);
-                    }
-                } else {
-                    personQuickAdd(formData,parentForm,toDelete);
-                }
-                // $("#loading-indicator").hide();
-                HideLoading('btn_url_import');
-            },
-            error: function(error) {
-                // $("#loading-indicator").hide();
-                HideLoading('btn_url_import');
-            }
-        });
+        showLoading();
+        let person = await checkPerson(personName);
+        if (person){
+            hideLoading();
+            let confirmationMessage = "Персону з таким ім'ям вже знайдено в базі. Все одно додати її?";
+            modal.confirm("Потенційний дубль", confirmationMessage, async (result) => {
+                if (result) await personQuickAdd(formData,parentForm,fieldType);
+            });
+        }
+        else {
+            await personQuickAdd(formData,parentForm,fieldType);
+        }
     }
 }
 $(document).ready(function() {
@@ -951,73 +1074,61 @@ $(document).ready(function() {
 });
 
 // Швидке додавання видавництва
-function publisherQuickAdd(formData,parentForm,to_delete=false) {
-    // $("#loading-indicator").show();
-    ShowLoading('btn_url_import');
-    parentForm.find(".error").hide();
-    parentForm.find(".success").hide();
-    
-    $.ajax({
-        type: "POST",
-        url: "/content-maker/publisher/quick-add",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: formData,
-        success: function(data) {
-            if (data.error) {
-                parentForm.find(".error").text(data.error).show();
-            }
-            else if (data.success) {
-                if (to_delete){
-                    parentForm.remove();
+async function publisherQuickAdd(formData,parentForm,to_delete=false) {
+    return new Promise((resolve, reject) => {
+        showLoading();
+        parentForm.find(".error").hide();
+        parentForm.find(".success").hide();
+        
+        $.ajax({
+            type: "POST",
+            url: "/content-maker/publisher/quick-add",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: formData,
+            success: function(data) {
+                if (data.error) {
+                    parentForm.find(".error").text(data.error).show();
                 }
-                else {
-                    parentForm.find(".success").text(data.success).show();
-                    parentForm.find('[name="name"]').val('')
+                else if (data.success) {
+                    modal.hideModal();
+                    hideLoading();
+                    showToast("Видавництво додано успішно",IconTypes.SUCCESS);
+                    edition.publisher_ = data.publisher;
+                    resolve();    
                 }
+            },
+            error: function(error) {
+                parentForm.find(".error").show();
+                reject(error);
             }
-        },
-        error: function(error) {
-            parentForm.find(".error").show();
-        }
+        });
     });
 }
-function publisherQuickAddBtn(btn){
+async function publisherQuickAddBtn(btn){
     let parentForm = btn.closest('form');
     let toDelete = btn.data("to-delete");
     let formData = parentForm.serialize();
+    let publisherName = parentForm.find('[name="name"]').val();
     parentForm.find(".error_name").hide();
 
     if (parentForm.find('[name="name"]').val()=="") {
         parentForm.find(".error_name").show();
     }
     else {           
-        // $("#loading-indicator").show();
-        ShowLoading('btn_url_import');
-
-        $.ajax({
-            type: "GET",
-            url: "/api/search/publishers",
-            data: {
-                term: parentForm.find('[name="name"]').val()
-            },
-            success: function(data) {
-                if (data && data.length > 0) {
-                    if (confirm("Персону з таким ім'ям вже знайдено в базі. Все одно додати її?")) {
-                        publisherQuickAdd(formData,parentForm,toDelete);
-                    }
-                } else {
-                    publisherQuickAdd(formData,parentForm,toDelete);
-                }
-                // $("#loading-indicator").hide();
-                HideLoading('btn_url_import');
-            },
-            error: function(error) {
-                // $("#loading-indicator").hide();
-                HideLoading('btn_url_import');
-            }
-        });
+        showLoading();
+        let publisher = await checkPublisher(publisherName);
+        if (publisher){
+            hideLoading();
+            let confirmationMessage = "Видавництво з такою назвою вже знайдено в базі. Все одно додати його?";
+            modal.confirm("Потенційний дубль", confirmationMessage, async (result) => {
+                if (result) await publisherQuickAdd(formData,parentForm,toDelete);
+            });
+        }
+        else {
+            await publisherQuickAdd(formData,parentForm,toDelete);
+        }
     }
 }
 $(document).ready(function() {
@@ -1076,44 +1187,44 @@ $(document).ready(function() {
     });
 });
 // Швидке додавання твору
-function workQuickAdd(formData,parentForm,to_delete=false) {
-    // $("#loading-indicator").show();
-    ShowLoading('btn_url_import');
-    parentForm.find(".error").hide();
-    parentForm.find(".success").hide();
-    
-    $.ajax({
-        type: "POST",
-        url: "/content-maker/work/quick-add",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: formData,
-        success: function(data) {
-            if (data.error) {
-                parentForm.find(".error").text(data.error).show();
-            }
-            else if (data.success) {
-                if (to_delete){
-                    parentForm.remove();
+async function workQuickAdd(formData,parentForm,to_delete=false) {
+    return new Promise((resolve, reject) => {
+        showLoading();
+        parentForm.find(".error").hide();
+        parentForm.find(".success").hide();
+        
+        $.ajax({
+            type: "POST",
+            url: "/content-maker/work/quick-add",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: formData,
+            success: function(data) {
+                if (data.error) {
+                    parentForm.find(".error").text(data.error).show();
                 }
-                else {
-                    parentForm.find(".success").text(data.success).show();
-                    parentForm.find('[name="name"]').val('');
-                    parentForm.find('[name="anotation"]').val('');
-                    parentForm.find('.work-avtors').html('');
+                else if (data.success) {
+                    console.log(data.success);
+                    modal.hideModal();
+                    hideLoading();
+                    showToast("Твір додано успішно",IconTypes.SUCCESS);
+                    edition.work_ = data.work;
+                    resolve();    
                 }
+            },
+            error: function(error) {
+                parentForm.find(".error").show();
+                reject(error);
             }
-        },
-        error: function(error) {
-            parentForm.find(".error").show();
-        }
+        });
     });
 }
-function workQuickAddBtn(btn){
+async function workQuickAddBtn(btn){
     let parentForm = btn.closest('form');
     let toDelete = btn.data("to-delete");
     let formData = parentForm.serialize();
+    let workName = parentForm.find('[name="name"]').val();
     parentForm.find(".error_name").hide();
     parentForm.find(".error-avtor").hide();
 
@@ -1125,31 +1236,18 @@ function workQuickAddBtn(btn){
     }
     else {           
         // $("#loading-indicator").show();
-        ShowLoading('btn_url_import');
-
-        $.ajax({
-            type: "GET",
-            url: "/api/search/works",
-            data: {
-                term: parentForm.find('[name="name"]').val()
-            },
-            success: function(data) {
-                if (data && data.length > 0) {
-                    if (confirm("Твір такого автора з такою назвою вже знайдено в базі. Все одно додати його?")) {
-                        workQuickAdd(formData,parentForm,toDelete);
-                    }
-                }
-                else {
-                    workQuickAdd(formData,parentForm,toDelete);
-                }
-                // $("#loading-indicator").hide();
-                HideLoading('btn_url_import');
-            },
-            error: function(error) {
-                // $("#loading-indicator").hide();
-                HideLoading('btn_url_import');
-            }
-        });
+        showLoading();
+        let work = await checkWork(workName, edition.avtor_);
+        if (work){
+            hideLoading();
+            let confirmationMessage = "Твір такого автора з такою назвою вже знайдено в базі. Все одно додати його?";
+            modal.confirm("Потенційний дубль", confirmationMessage, async (result) => {
+                if (result) await workQuickAdd(formData,parentForm,toDelete);
+            });
+        }
+        else {
+            await workQuickAdd(formData,parentForm,toDelete);
+        }
     }
 }
 $(document).ready(function() {
@@ -1157,73 +1255,3 @@ $(document).ready(function() {
         workQuickAddBtn($(this));
     });
 });
-function workQuickAddForm(workName,avtor,about){
-    let csrfToken = $('meta[name="csrf-token"]').attr('content');     
-    let genres = '';
-    genres_for_work_item.forEach(genre => {
-        genres += `<li data-value="${genre.id}">${genre.name}</li>`;
-    });           
-    let formHtml = `                  
-        <form action="" method="POST" class="validate-form">                    
-            <div class="mb-3 mt-1">
-                <input type="hidden" name="_token" value="${csrfToken}">
-                <hr>
-                <label for="editions" class="form-label">Додайте твір</label>
-                <div class="error-text hide error_name">Заповніть це поле</div>
-                <div class="input-group-big mb-4">
-                    <input type="text" class="input-with-btt enter_btn mb-1" name="name" placeholder="Введіть твір"
-                    value="${workName}">
-                    <div class="mb-1">
-                        <input type="text" name="alt_name" placeholder="Альтернативна назва">
-                    </div>
-                    <div class="mb-1">
-                        <div class="base-select">
-                            <div class="select-box">
-                                <span class="selected-option d-flex align-items-center">Виберіть жанр</span>
-                                <ul class="options hide">
-                                <li data-value="">Інше</li>
-                                ${genres}
-                                </ul>
-                            </div>
-                            <input type="hidden" name="genre_id">
-                        </div>                      
-                    </div>
-                    <div class="work-avtors mt-1">
-                        <div class="el-insert mb-1">
-                            <input readonly type="text" class="hide" name="avtor_id[]" value="${avtor.id}">
-                            <input readonly type="text" class="form-control"  value="${avtor.name} (id = ${avtor.id})">
-                        </div>
-                    </div>
-                    <textarea class="mt-1" name="anotation" rows="4" placeholder="Введіть анотацію">${about}</textarea>
-                    <div class='text-end mt-1'>
-                        <button class="btn_work_add" type="button" data-to-delete="true">Додати</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    `;
-    
-
-    $("#import_add").append(formHtml);
-    $(".btn_work_add").click(function() { workQuickAddBtn($(this)); });
-    $(".base-select").on("click", ".selected-option", function() {
-        var $baseSelect = $(this).closest(".base-select");
-        $baseSelect.find(".options").toggleClass("hide");
-    });
-    
-    $(".base-select").on("click", ".options li", function() {
-        var $baseSelect = $(this).closest(".base-select");
-        var selectedValue = $(this).data("value");
-        $baseSelect.find("input[type='hidden']").val(selectedValue);
-        $baseSelect.find(".selected-option").text($(this).text());
-        $baseSelect.find(".options").addClass("hide");
-            
-        // фільтрування при зміні опції
-        if ($(this).hasClass("change-to-submit")) {
-            var $parentForm = $baseSelect.closest("form");
-            if ($parentForm.length > 0) {
-                $parentForm.submit();
-            }
-        }
-    });
-}

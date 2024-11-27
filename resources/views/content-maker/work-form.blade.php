@@ -2,8 +2,15 @@
 
 @section('inner_content')	
 
-    <div class="header-box">
-        <h1>Форма {{ $work ? 'редагування' : 'додавання' }} твору</h1>
+    <div class="header-box row">
+        <h1 class="col">Форма {{ $work ? 'редагування' : 'додавання' }} твору</h1>
+        @if ($work)                
+            <div class="col-auto align-center underline">
+                <a href="{{ route('work',$work->id) }}" class="light-tippy" title="Переглянути">
+                    <img src="{{ asset('svg/eye.svg') }}" alt="Переглянути" class="icon">
+                </a>
+            </div>
+        @endif
     </div>
 
     @if (!auth()->user()->hasPermission('content-make'))
@@ -25,7 +32,7 @@
         <div class="mb-3">
             <label for="w_alt_names" class="form-label">Альтернативні назви</label>
             <div class="input-group mb-4">
-                <input type="text" class="input-with-btt enter_btn" id="w_alt_name_add">
+                <input type="text" class="input-with-btt enter-btn" id="w_alt_name_add">
                 <button class="btt-with-input" type="button" id="btn_w_alt_name_add">Додати назву</button>
             </div>
                 
@@ -62,7 +69,7 @@
         </div>
 
         {{-- Жанр --}}
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Жанр</label>
             <div class="base-select">
                 <div class="select-box">
@@ -79,7 +86,7 @@
         </div>
 
         {{-- Мова написання --}}
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Мова написання</label>
             <div class="base-select">
                 <div class="select-box">
@@ -96,7 +103,7 @@
         </div>
 
         {{-- Рік написання --}}
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Рік написання</label>
             <input type="text" name="year" class="number" value="{{$work && $work->year!=0 ?  abs($work->year) : ''}}" maxlength="4"
             placeholder="рррр" autocomplete="off">
@@ -161,7 +168,7 @@
         </div>   
 
         {{-- Видання для обкладинки --}}
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Видання для обкладинки</label>
             <div class="base-select">
                 <div class="select-box">
@@ -180,8 +187,9 @@
             </div>     
         </div>             
 
-        <div class='text-end mb-3'>
-            <input type="submit" name="submit" class="base-btn" value="Зберегти">
+        <div class='content-end gap-1'>
+            <input type="submit" name="submit" value="Зберегти">
+            <input type="submit" name="submit" class="base-btn" value="Зберегти та переглянути">
         </div>
     </form>    
 

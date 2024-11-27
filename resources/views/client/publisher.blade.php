@@ -15,13 +15,13 @@
 	<section class="with-image-box row mb-3">	
 		<div class="col-sm-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center">
 			<div class="rel with-image-box-imgs">						
-				{{-- @if ($publisher->img)						
-					<img src="{{asset($publisher->img)}}" alt="Логотип видавництва">
-				@else --}}
+				@if ($publisher->img)						
+					<img src="{{asset($publisher->img)}}" alt="{{ $publisher->name }}">
+				@else
 					<div class="work-without-img square">
 						<span>{{$publisher->name}}</span>						
 					</div>
-				{{-- @endif --}}
+				@endif
 				@if ($can_edit)
 					<a href="{{ route('publisher.editForm', $publisher->id) }}">
 						<img src="{{asset('/svg/edit.svg')}}" class="icon admin-icon">

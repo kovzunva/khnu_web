@@ -6,8 +6,15 @@
 
 @section('content')    
 
-    <div class="header-box">
-        <h1>{{ $blog ? __('Форма редагування блогу') : __('Форма додавання блогу') }}</h1>
+    <div class="header-box row">
+        <h1 class="col">{{ $blog ? __('Форма редагування блогу') : __('Форма додавання блогу') }}</h1>
+        @if ($blog)                
+            <div class="col-auto align-center underline">
+                <a href="{{ route('blog',$blog->id) }}" class="light-tippy" title="{{ __('Переглянути') }}">
+                    <img src="{{ asset('svg/eye.svg') }}" alt="{{ __('Переглянути') }}" class="icon">
+                </a>
+            </div>
+        @endif
     </div>
 
     <form action="{{ $blog ? route('blog.edit', $blog->id) : route('blog.add') }}" method="POST" class="validate-form">
@@ -41,8 +48,9 @@
             <textarea name="content" class="text-editor">{{ $blog ? $blog->content : '' }}</textarea>
         </div>                             
 
-        <div class='text-end'>
-            <input type="submit" name="submit" class="base-btn" value="{{ __('Опублікувати') }}">
+        <div class='content-end gap-1'>
+            <input type="submit" name="submit" value="{{ __('Зберегти') }}">
+            <input type="submit" name="submit" class="base-btn" value="{{ __('Зберегти та переглянути') }}">
         </div>
     </form>    
 

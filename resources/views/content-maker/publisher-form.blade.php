@@ -2,8 +2,15 @@
 
 @section('inner_content')	
 
-    <div class="header-box">
-        <h1>Форма {{ $publisher ? 'редагування' : 'додавання' }} видавництва</h1>
+    <div class="header-box row">
+        <h1 class="col">Форма {{ $publisher ? 'редагування' : 'додавання' }} видавництва</h1>
+        @if ($publisher)                
+            <div class="col-auto align-center underline">
+                <a href="{{ route('publisher',$publisher->id) }}" class="light-tippy" title="Переглянути">
+                    <img src="{{ asset('svg/eye.svg') }}" alt="Переглянути" class="icon">
+                </a>
+            </div>
+        @endif
     </div>
 
     @if (!auth()->user()->hasPermission('content-make'))
@@ -20,7 +27,7 @@
             <input type="text" name="name" value="{{ $publisher ? $publisher->name : '' }}" class="required" data-error="Це якесь підозріле анонімне видавництво?..">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Країна</label>
             <div class="base-select">
                 <div class="select-box">
@@ -37,7 +44,7 @@
             </div>     
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Рік заснування</label>
             <input type="text" name="year" class="number" value="{{$publisher && $publisher->year!=0 ?  abs($publisher->year) : ''}}" maxlength="4" placeholder="рррр" autocomplete="off">
         </div>
@@ -58,10 +65,17 @@
         <div class="mb-3">
             <label for="" class="form-label">Посилання</label>
             <textarea name="links" rows="2">{{ $publisher ? $publisher->links : '' }}</textarea>
-        </div>        
+        </div>         
+    
+        {{-- Картинка --}}
+        <div class="mb-3">
+            <div class="header-box">Зображення</div>
+            @include('components.upload-img', ['img' => $publisher && $publisher->img_edit? asset($publisher->img_edit) : '', 'size' => '' ])
+        </div>      
 
-        <div class='text-end'>
-            <input type="submit" name="submit" class="base-btn" value="Зберегти">
+        <div class='content-end gap-1'>
+            <input type="submit" name="submit" value="Зберегти">
+            <input type="submit" name="submit" class="base-btn" value="Зберегти та переглянути">
         </div>
     </form>     
 

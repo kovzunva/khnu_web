@@ -10,8 +10,15 @@
 
 @section('content')	
 
-    <div class="header-box">
-        <h1>Форма {{ $forum ? 'редагування' : 'додавання' }} форуму</h1>
+    <div class="header-box row">
+        <h1 class="col">Форма {{ $forum ? 'редагування' : 'додавання' }} форуму</h1>
+        @if ($forum)                
+            <div class="col-auto align-center underline">
+                <a href="{{ route('forum',$forum->id) }}" class="light-tippy" title="Переглянути">
+                    <img src="{{ asset('svg/eye.svg') }}" alt="Переглянути" class="icon">
+                </a>
+            </div>
+        @endif
     </div>
 
     <form action="/forum/{{ $forum ? $forum->id.'/edit' : 'add' }}" method="POST" id="forum-form"
@@ -20,7 +27,6 @@
 
         <div class="mb-3">
             <label for="" class="form-label">Назва</label>
-            <div class="error-text hide" id="error_name">Заповніть поле</div>
             <input type="text" name="name" value="{{ $forum ? $forum->name : '' }}" class="required">
         </div>
 
@@ -36,7 +42,6 @@
                 <div class="select-box">
                     <span class="selected-option d-flex align-items-center">
                     {{ $forum && $forum->tematic ? $forum->tematic->name : 'Загальна тематика' }}
-                    <i class="fa-solid fa-angle-down ml-auto"></i></span>
                     <ul class="options hide">
                     <li data-value="" class="tematic-option">Загальна тематика</li>
                     @foreach ($tematics as $tematic)
@@ -47,7 +52,7 @@
                 <input type="hidden" name="tematic_id" value="{{ $forum ? $forum->tematic_id : '' }}">
             </div> 
 
-            @foreach ($tematics as $tematic)
+            {{-- @foreach ($tematics as $tematic)
             <div class="mb-3 tematic-block hide" id="tematic{{$tematic->id}}">
                 <label for="w_alt_names" class="form-label">{{$tematic->item_name}}</label>
                 <div class="error-text hide" id="error_publisher_edition_container">Виберіть {{$tematic->item_name}}</div>
@@ -60,7 +65,7 @@
                     @endif
                 </div>
             </div>
-            @endforeach 
+            @endforeach  --}}
         </div> 
         
         {{-- Картинка --}}
@@ -76,7 +81,7 @@
                         <input type="file" id="file_img_1" accept="image/*">
                     </div>
                     <div class="input-group mb-3">
-                        <input type="text" class="input-with-btt enter_btn" id="url_img_1" placeholder="URL зображення">
+                        <input type="text" class="input-with-btt enter-btn" id="url_img_1" placeholder="URL зображення">
                         <button class="btn btn-outline-secondary btt-with-input" type="button" id="btn_url_img_1">Додати</button>
                     </div>
                 </div>
@@ -87,13 +92,11 @@
             </div>
         </div>     
 
-        <div class='text-end'>
-            <input type="submit" name="submit" class="base-btn" value="Опублікувати">
+        <div class='content-end gap-1'>
+            <input type="submit" name="submit" value="Зберегти">
+            <input type="submit" name="submit" class="base-btn" value="Зберегти та переглянути">
         </div>
     </form>    
-
-<script src="https://cdn.tiny.cloud/1/tatyegaul1dl88btgari4jz7c7st2hz44mxb4kck1c4rvzip/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script> 
-@vite('resources/js/specified.js')  
 
 @endsection
 	

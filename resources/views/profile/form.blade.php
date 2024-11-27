@@ -36,7 +36,7 @@
                         <input type="file" id="file_img_1" accept="image/*">
                     </div>
                     <div class="input-group mb-3">
-                        <input type="text" class="input-with-btt enter_btn" id="url_img_1" placeholder="URL зображення">
+                        <input type="text" class="input-with-btt enter-btn" id="url_img_1" placeholder="URL зображення">
                         <button class="btn btn-outline-secondary btt-with-input" type="button" id="btn_url_img_1">Додати</button>
                     </div>
                 </div>

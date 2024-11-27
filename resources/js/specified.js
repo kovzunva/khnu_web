@@ -1,3 +1,9 @@
+import $ from 'jquery';
+window.jQuery = $;
+window.$ = $;
+
+import '../js/summernote-lite.min.js';
+
 // Експертна система
 if (document.getElementById('question'))
 $(document).ready(function() {

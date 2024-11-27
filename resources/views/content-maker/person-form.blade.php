@@ -2,8 +2,15 @@
 
 @section('inner_content')	
 
-<div class="header-box">
-    <h1>Форма {{ $person ? 'редагування' : 'додавання' }} персони</h1>
+<div class="header-box row">
+    <h1 class="col">Форма {{ $person ? 'редагування' : 'додавання' }} персони</h1>
+    @if ($person)                
+        <div class="col-auto align-center underline">
+            <a href="{{ route('person',$person->id) }}" class="light-tippy" title="Переглянути">
+                <img src="{{ asset('svg/eye.svg') }}" alt="Переглянути" class="icon">
+            </a>
+        </div>
+    @endif
 </div>
 
 @if (!auth()->user()->hasPermission('content-make'))
@@ -24,7 +31,7 @@
     <div class="mb-3">
         <label for="p_alt_names" class="form-label">Альтернативні імена</label>
         <div class="input-group mb-4">
-            <input type="text" class="input-with-btt enter_btn" id="p_alt_name_add">
+            <input type="text" class="input-with-btt enter-btn" id="p_alt_name_add">
             <button class="btt-with-input" type="button" id="btn_p_alt_name_add">Додати ім'я</button>
         </div>
             
@@ -110,30 +117,13 @@
     
     {{-- Картинка --}}
     <div class="mb-3">
-        <label for="" class="form-label">Картинка</label>
+        <div class="header-box">Зображення</div>
+        @include('components.upload-img', ['img' => $person && $img_edit? asset($img_edit) : '', 'size' => '' ])
+    </div>
 
-        <div class="row">
-            <div class="img_preview" id="container_img">                                   
-                <img src="{{ $person && $img_edit? asset($img_edit):'' }}" id='edit_img' alt="-">
-            </div>
-            <div class="col">
-                <div class="mb-3">
-                    <input type="file" id="file_img_1" accept="image/*">
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="input-with-btt enter_btn" id="url_img_1" placeholder="URL зображення">
-                    <button class="btt-with-input" type="button" id="btn_url_img_1">Додати</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="container mb-3">
-            <input type="hidden" name="img_pass" value="" id="img_pass">       
-        </div>
-    </div>       
-
-    <div class='text-end'>
-        <input type="submit" name="submit" class="base-btn" value="Зберегти">
+    <div class='content-end gap-1'>
+        <input type="submit" name="submit" value="Зберегти">
+        <input type="submit" name="submit" class="base-btn" value="Зберегти та переглянути">
     </div>
 </form>     
 

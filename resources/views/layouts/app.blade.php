@@ -7,7 +7,7 @@
     <title>{{ isset($title) && $title!=null && $title!=''? $title.' - ':'' }}Щопочитайка</title>
     <link rel="icon" type="image/png" href="{{ asset('images/Лого.png') }}">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
-    @vite(['resources/css/my_style.css', 'resources/js/most_used.js', 'resources/js/client.js'])   
+    @vite(['resources/css/my_style.css'])   
     @yield('styles')
     <?php
         header('Cache-Control: public, max-age=31536000');
@@ -19,6 +19,8 @@
     <div id="app" class="container h-100">
         <div class="container-fixed-width h-100 base-container" id="layout">
             <div class="overlay" id="overlay"></div>
+            <div class="overlay" id="overlay-modal"></div>
+            <div class="overlay" id="overlay-loading"><div class="loading-spinner"></div></div>
 
             {{-- Меню для малого екрану --}}
             <div class="md-yes" id="mobile_menu">
@@ -191,11 +193,13 @@
 
         </div>
     </div> 
+    
 
     {{-- скрипти --}}
     <script src="https://kit.fontawesome.com/c04e65d013.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
+    @vite(['resources/js/most_used.js', 'resources/js/client.js'])   
     @yield('scripts')
     
     <script>

@@ -1,3 +1,7 @@
+import $ from 'jquery';
+window.jQuery = $;
+window.$ = $;
+
 // Присвоєння фукнцій на кнопки 
 $(document).ready(function() {
     // Додавання ел
@@ -108,7 +112,6 @@ function AddElInsert(el){
     let $new_name = $('#'+el+'_add');
     if ($new_name.val()!=''){
         let $container = $('#'+el+'_container');
-        // alert($container.attr('id'));
         let html = '<div class="el-insert input-group mb-1">'+
         '<input readonly type="text" class="form-control input-with-btt"'+
         'name="add_'+el+'[]" value="'+$new_name.val()+'">'+
@@ -212,24 +215,6 @@ function CheckRadioButtons(){
         mainImgInput.value = 0;
     }
 }
-
-// ентер на кнопку у текстових полях
-document.addEventListener('DOMContentLoaded', function() {
-    let enterBtnInputs = document.querySelectorAll('.enter_btn');
-
-    enterBtnInputs.forEach(input => {
-        input.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                let btnId = 'btn_' + input.id;
-                let EnterButton = document.getElementById(btnId);
-                if (EnterButton) {
-                    EnterButton.click(); // Викликаємо обробник кнопки
-                }
-            }
-        });
-    });
-});
 
 // Завантаження зображень
 let img_index = 0;

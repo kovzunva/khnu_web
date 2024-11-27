@@ -130,6 +130,37 @@
     </div>
 </details>
 
+{{-- Тематика форуму --}}
+<details id="forum_tematics_details">
+    <summary><b>Тематика форуму</b></summary>                
+    <div class="mb-3 mt-1">
+        <form action="{{route('category.add','forum_tematics')}}" method="POST" class="validate-form">
+            @csrf
+            <div class="input-group mb-4">
+                <input type="text" class="input-with-btt" name='name'>
+                <button class="btt-with-input" name="submit" type="submit">Додати</button>
+            </div>
+        </form>
+            
+        @foreach ($forum_tematics as $item)
+        
+        <form action="{{route('category.edit',['forum_tematics',$item->id])}}" method="POST" class="validate-form">
+            @csrf
+            <div class="el-inserted input-group mb-1">
+                <input readonly type="text" class="hide" name="rezult_id[]" value="{{ $item->id }}">
+                <input type="text" class="form-control input-with-btt" name="name" value="{{ $item->name }}">
+                <button type="submit" name="submit" class="border-radius-0 br-none">Редагувати</button>
+                <a class=" confirm-link" href="{{route('category.del',['forum_tematics',$item->id])}}"
+                data-message="Ви впевнені, що хочете видалити категорію «{{$item->name}}»?">
+                    <button type="button" class="btt-with-input">Видалити</button>                            
+                </a>
+            </div>
+        </form>
+
+        @endforeach
+    </div>
+</details>
+
 {{-- Типи обкладинки --}}
 <details id="type_of_cover_details">
     <summary><b>Типи обкладинки</b></summary>                

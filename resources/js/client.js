@@ -1,3 +1,7 @@
+import $ from 'jquery';
+window.jQuery = $;
+window.$ = $;
+
 // редагування коментаря
 document.addEventListener('DOMContentLoaded', function() {
     let editButtons = document.querySelectorAll('.edit-comment-btn');

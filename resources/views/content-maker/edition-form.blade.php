@@ -2,8 +2,15 @@
 
 @section('inner_content')	
 
-    <div class="header-box">
-        <h1>Форма {{ $edition ? 'редагування' : 'додавання' }} видання</h1>
+    <div class="header-box row">
+        <h1 class="col">Форма {{ $edition ? 'редагування' : 'додавання' }} видання</h1>
+        @if ($edition)                
+            <div class="col-auto align-center underline">
+                <a href="{{ route('edition',$edition->id) }}" class="light-tippy" title="Переглянути">
+                    <img src="{{ asset('svg/eye.svg') }}" alt="Переглянути" class="icon">
+                </a>
+            </div>
+        @endif
     </div>
 
     @if (!auth()->user()->hasPermission('content-make'))
@@ -19,7 +26,7 @@
                 @csrf
                 <label for="">Сервіси для імпорту: YAKABOO, Наш Формат, Vivat, Книгарня "Є"</label>
                 <div class="input-group mb-3 mt-1">
-                    <input type="text" class="input-with-btt enter_btn" id="url_import" placeholder="URL сторінки">
+                    <input type="text" class="input-with-btt enter-btn" id="url_import" placeholder="URL сторінки" value="https://www.yakaboo.ua/ua/muzichna-skrin-ka-tom-1-laskavo-prosimo-v-pandoriju.html?sc_content=26389_r1475v1876">
                     <button class="btt-with-input" type="button" id="btn_url_import">Імпортувати</button>
                 </div>
                 <div class="error-text hide" id="error_import">Помилка імпорту</div>
@@ -41,7 +48,7 @@
                     <div class="success-text hide success">Додано успішно</div>
                     <div class="error-text hide error_name">Заповніть це поле</div>
                     <div class="input-group mb-4">
-                        <input type="text" class="input-with-btt enter_btn" name="name" placeholder="Введіть видавництво">
+                        <input type="text" class="input-with-btt enter-btn" name="name" placeholder="Введіть видавництво">
                         <button class="btt-with-input btn_publisher_add" type="button">Додати</button>
                     </div>
                 </div>
@@ -55,7 +62,7 @@
                     <div class="success-text hide success">Персону додано успішно</div>
                     <div class="error-text hide error_name">Заповніть це поле</div>
                     <div class="input-group mb-1">
-                        <input type="text" class="input-with-btt enter_btn" name="name" placeholder="Введіть персону">
+                        <input type="text" class="input-with-btt enter-btn" name="name" placeholder="Введіть персону">
                         <button class="btt-with-input btn_person_add" type="button">Додати</button>
                     </div>
                     <div class="mb-1">
@@ -82,7 +89,7 @@
                     <div class="success-text hide success">Додано успішно</div>
                     <div class="error-text hide error_name">Заповніть це поле</div>
                     <div class="input-group-big mb-4">
-                        <input type="text" class="enter_btn mb-1" name="name" placeholder="Введіть твір">
+                        <input type="text" class="enter-btn mb-1" name="name" placeholder="Введіть твір">
                         <div class="mb-1">
                             <input type="text" name="alt_name" placeholder="Альтернативна назва">
                         </div>
@@ -156,7 +163,7 @@
         </div>
 
         {{-- Мова --}}
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Мова</label>
             <div class="base-select" id="language_select">
                 <div class="select-box">
@@ -173,17 +180,17 @@
             </div>     
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Рік видання</label>
             <input type="text" name="year" class="number" value="{{$edition && $edition->year!=0 ? $edition->year : ''}}" maxlength="4"
             placeholder="рррр" autocomplete="off">
         </div>
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Тираж</label>
             <input type="text" name="size" class="number" value="{{$edition && $edition->size!=0 ?  $edition->size : ''}}" maxlength="8"
             autocomplete="off">
         </div>
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Кількість сторінок</label>
             <input type="text" name="pages" class="number" value="{{$edition && $edition->pages!=0 ?  $edition->pages : ''}}" maxlength="4"
             autocomplete="off">
@@ -194,7 +201,7 @@
         </div>
 
         {{-- Тип обкладинки --}}
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Тип обкладинки</label>
             <div class="base-select" id="type_of_cover_select">
                 <div class="select-box">
@@ -229,7 +236,7 @@
                             <input readonly type="text" class="hide" name="designer[]" value="{{ $designer->id }}">
                             <input readonly type="text" class="form-control input-with-btt" value="{{ $designer->base_name.
                             ' (id = '.$designer->id.')' }}">
-                            <input readonly type="text" class="form-control input-with-btt" value="{{ $designer->name }}">
+                            <input readonly type="text" class="form-control" value="{{ $designer->name }}">
                             <button type="button" class="btt-with-input btn-remove-el-inserted">Видалити</button>
                         </div>
                     @endforeach
@@ -249,7 +256,7 @@
                             <input readonly type="text" class="hide" name="illustrator[]" value="{{ $illustrator->id }}">
                             <input readonly type="text" class="form-control input-with-btt" value="{{ $illustrator->base_name.
                             ' (id = '.$illustrator->id.')' }}">
-                            <input readonly type="text" class="form-control input-with-btt" value="{{ $illustrator->name }}">
+                            <input readonly type="text" class="form-control" value="{{ $illustrator->name }}">
                             <button type="button" class="btt-with-input btn-remove-el-inserted">Видалити</button>
                         </div>
                     @endforeach
@@ -265,19 +272,17 @@
             <label for="" class="form-label">Примітки</label>
             <textarea name="notes" rows="2">{{ $edition ? $edition->notes : '' }}</textarea>
         </div>
-        <div class="mb-3">
+        <div class="mb-4">
             <label for="" class="form-label">Посилання</label>
             <textarea name="links" rows="2">{{ $edition ? $edition->links : '' }}</textarea>
         </div>
 
-        <hr>
         <!-- Блок для вмісту -->
-        <div class="mb-3">
-            <label for="" class="form-label">Вміст</label>
+        <div class="mb-4">
+            <div class="header-box">Вміст</div>
             <input type="text" id="edition_item">
                 
-            <div id="item_container" class="mt-3 no-empty">
-                <ul>
+            <ul id="item_container" class="mt-3 no-empty">
                 @if ($edition && $items)
                     @foreach ($items as $item)
                         <div class="el-inserted insert-item mb-3" data-item-id="{{$item->id}}">
@@ -339,57 +344,51 @@
                         </div>
                     @endforeach 
                 @endif
-                </ul>
-            </div>
+            </ul>
         </div>
-        <hr>
 
         {{-- Зображення --}}
         <div>
-            <label class="form-label">Додайте зображення</label>
-            <div class="mb-3">
+            <div class="header-box">Зображення</div>
+            @include('components.upload-img', ['img' => null, 'size' => 'відповідне до видання'])
+            {{-- <div class="mb-3">
                 <input type="file" id="file_img" accept="image/*">
             </div>
             <div class="input-group mb-3">
-                <input type="text" class="input-with-btt enter_btn" id="url_img" placeholder="URL зображення">
+                <input type="text" class="input-with-btt enter-btn" id="url_img" placeholder="URL зображення">
                 <button class="btt-with-input" type="button" id="btn_url_img">Додати</button>
             </div>
 
             <input type="hidden" name="main_img" value="{{ $edition ? $edition->main_img : '0' }}">
             <div class="container hide" id="img_passes">
-            </div>
+            </div> --}}
 
             {{-- Виведення зображень --}}
-            <div class="container">
-                <div class="row" id="container_img">
+            {{-- <div class="container">
+                <div class="d-flex" id="container_img">
                     @if ($edition && $imgs_edit)
                     @foreach ($imgs_edit as $index => $img_edit)
-                        <div class="col edit-img-container">  
-                            <div>       
-                                <img src="{{ asset($img_edit) }}" alt="">
-                            </div>                               
-                            <div class="edit-img-items row">
+                        <div class="edit-img-container rel">     
+                            <img src="{{ asset($img_edit) }}" alt="{{ $edition->name }}">
+                            <img src="{{ asset('svg/close.svg') }}" class="icon top-right-icon saved-img-del-btn pointer" data-img="{{ $img_edit }}" alt="Видалити зображенння" title="Видалити зображенння"> --}}
+                            {{-- <div class="edit-img-items row">
                                 <div class="col-auto p-1">                                        
                                     <input type="radio" name="is_main_img" id="is_main_img_{{ $index }}"
                                     {{$edition->main_img == $index ? 'checked' : '' }}>
                                     <label for="is_main_img_{{ $index }}">Головна</label>
                                 </div>
-                                <div class="col">                                        
-                                    <button type="button" class="saved-img-del-btn w-100" data-img="{{ $img_edit }}">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                            </div> --}}
+                        {{-- </div>
                     @endforeach
                     @endif
                 </div>
-            </div>
+            </div> --}}
         </div>
         
 
-        <div class='text-end'>
-            <input type="submit" name="submit" class="base-btn" value="Зберегти">
+        <div class='content-end gap-1'>
+            <input type="submit" name="submit" value="Зберегти">
+            <input type="submit" name="submit" class="base-btn" value="Зберегти та переглянути">
         </div>
     </form>   
 

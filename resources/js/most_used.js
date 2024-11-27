@@ -7,6 +7,9 @@ window.$ = $;
 import select2 from 'select2';
 select2();
 
+import { CustomModal } from './custom-classes';
+const modal = new CustomModal('#overlay-modal');
+
 // Перевірки при надсиланні форми
 $(document).ready(function() {
   $(".validate-form").each(function() {
@@ -250,14 +253,25 @@ numberInputsDot.forEach(input => {
 // Кнопки-посилання з підтвердженням
 $(document).ready(function() {
   $('.confirm-link').click(function(event) {
-      let confirmationMessage = $(this).data('message');
-      let confirmation = confirm(confirmationMessage);
+    event.preventDefault();
 
-      if (!confirmation) {
-          event.preventDefault();
+    let confirmationMessage = $(this).data('message');
+    let isLink = $(this).is('a');
+    let isSubmitButton = $(this).is('button[type="submit"]') || $(this).attr('type') === 'submit';
+
+    modal.confirm('Підтвердження', confirmationMessage, (result) => {
+      if (result) {
+        if (isLink) {
+          window.location.href = $(this).attr('href');
+        }
+        else if (isSubmitButton) {
+          $(this).closest('form').submit();
+        }
       }
+    });
   });
 });
+
 // Кнопки-посилання з введенням повідомлення
 $(document).ready(function() {
   $(".input-link").click(function(e) {
@@ -265,46 +279,153 @@ $(document).ready(function() {
 
       let message = $(this).data('message');
       let input = $(this).data('input')? $(this).data('input'):"";
-      let userInput = prompt(message, input);
+      modal.input('Потрібна інформація', message, (value) => {
+        if (value !== null && value.trim() !== "") {
+            let link = $(this).attr('href');
+            window.location.href = link + "?input=" + encodeURIComponent(value);
+        }
+      }, input);
+  });
+});
 
-      if (userInput !== null && userInput.trim() !== "") {
-          let link = $(this).attr('href');
-          window.location.href = link + "?input=" + encodeURIComponent(userInput);
+// ентер на кнопку у текстових полях
+$(document).ready(function () {
+  $('.input-group .enter-btn').on('keypress', function (e) {
+      if (e.key === "Enter") {
+          e.preventDefault();
+          $(this).siblings('button').click();
       }
   });
 });
 
 
 // картинка
-function PrintNewImgEdit(imageURL){
-  edit_img.src = imageURL;
-  img_pass.value = imageURL;
-}  
-const fileInput = document.getElementById('file_img_1');
-if (fileInput) {
-fileInput.addEventListener('change', function() {
-
-const imageFile = this.files[0];
-if (imageFile) {
-  const fileReader = new FileReader();
-  fileReader.onload = function(event) {
-  const imageURL = event.target.result;
-  PrintNewImgEdit(imageURL);
-  }
-  fileReader.readAsDataURL(imageFile);
-}
-});
-}
-const urlInput = document.getElementById('url_img_1');
-if (urlInput) {
-  document.getElementById('btn_url_img_1').addEventListener('click', function() {
-    const imageURL = urlInput.value.trim();
-
-    if (imageURL !== '') {        
-      PrintNewImgEdit(imageURL);
-      urlInput.value = '';
-    }
+$(document).ready(function () {
+  // Обробник кліку для відкриття файлового провідника
+  $('.upload-img-container .inner-container').on('click', function () {
+      $(this).closest('.upload-img-container').find('.img-file').click();
   });
+
+  // Обробник вибору файлу
+  $('.upload-img-container .img-file').on('change', function () {
+      const fileInput = this;
+
+      if (fileInput.files && fileInput.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            setPreviewImage(fileInput , e.target.result);
+          };
+          reader.readAsDataURL(fileInput.files[0]);
+      }
+  });
+
+  // Обробник для перетягування файлів
+  $('.upload-img-container .inner-container').on('dragover', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).addClass('dragging');
+  }).on('dragleave', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).removeClass('dragging');
+  }).on('drop', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).removeClass('dragging');
+
+      const container = this;
+      const file = e.originalEvent.dataTransfer.files[0];
+
+      if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+              setPreviewImage(container, e.target.result);
+          };
+          reader.readAsDataURL(file);
+      }
+  });
+
+  // Обробник для введення URL та натискання на кнопку
+  $('.upload-img-container .btn-url-img').on('click', function () {
+      const urlInput = $(this).siblings('.url-img').val();
+      if (urlInput) {
+        setPreviewImage(this, urlInput);
+      }
+  });
+
+  // Перетягування в браузер (анімація)
+  const uploadContainer = $('.upload-img-container .inner-container');
+  const overlay = $("#overlay");
+  let dragCounter = 0;
+  if (uploadContainer && uploadContainer.length>0){
+
+    $(document).on('dragenter', function (e) { // перетягування
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter++;
+        if (dragCounter === 1) {
+            overlay.fadeIn();
+            uploadContainer.addClass('light-shadow')
+        }
+    }).on('dragleave', function (e) { // вихід за межі
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter--;
+        if (dragCounter === 0) {
+            overlay.fadeOut();
+            uploadContainer.removeClass('light-shadow')
+        } 
+    }).on('drop', function (e) { // відпускання
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter = 0;
+        overlay.fadeOut();
+        uploadContainer.removeClass('dragging')
+        uploadContainer.removeClass('light-shadow')
+    });
+
+    // перетягування всередині контейнера
+    uploadContainer.on('dragenter', function (e) {
+      uploadContainer.addClass('dragging')
+    });
+    uploadContainer.on('dragleave', function (e) {
+      dragCounter = 1;
+      uploadContainer.removeClass('dragging')
+    });
+    uploadContainer.on('drop', function (e) {
+      dragCounter = 0;
+      overlay.fadeOut();
+      uploadContainer.removeClass('dragging')
+      uploadContainer.removeClass('light-shadow')
+    });
+  }
+});
+
+function setPreviewImage(el, imageUrl) {
+  const containerElement = $(el).closest('.upload-img-container');
+  const preview = containerElement.find('.img-preview');
+  var innerContainer = containerElement.find('.inner-inner-container');
+  const fileInput = containerElement.find('.img-pass');
+
+  // Перевірка на валідність URL перед установкою зображення
+  if (typeof imageUrl !== 'string' || !imageUrl.startsWith('data:image') && !isValidUrl(imageUrl)) {
+      showToast("Недопустимий шлях до зображення: "+imageUrl);
+      return;
+  }
+
+  preview.attr('src', imageUrl);
+  innerContainer.hide();
+  fileInput.val(imageUrl);
+}
+
+// Допоміжна функція для перевірки на коректність URL
+function isValidUrl(url) {
+  try {
+      new URL(url);
+      return true;
+  } catch (_) {
+      return false;
+  }
 }
 
 // Кнопки перемикання меню
@@ -372,7 +493,7 @@ $(document).ready(function() {
       $('.input-group').each(function() {
           var $input = $(this).find('.input-with-btt');
           var $button = $(this).find('.btt-with-input');
-          if ($input.val().trim() === '') {
+          if ($input.val() && $input.val().trim() === '') {
               $button.prop('disabled', true);
           } else {
               $button.prop('disabled', false);
@@ -390,51 +511,52 @@ $(document).ready(function() {
 });
 
 // Сповіщення при загрузці сторінки
+export function showToast(message, iconClass) {
+    var $toast = $('#toast');
+    var $message = $toast.find('.message');
+    var $icon = $toast.find('.icon-box');
+
+    $message.text(message);
+    $icon.removeClass().addClass('icon-box ' + iconClass);
+
+    $toast.css({
+        opacity: 0,
+        bottom: '0',
+        visibility: 'visible'
+    });
+
+    $toast.animate({
+        opacity: 1,
+        bottom: '30px'
+    }, 400);
+
+    var timeoutId = setTimeout(function() {
+        $toast.animate({
+            opacity: 0,
+            bottom: '0'
+        }, 400, function() {
+            $toast.css('visibility', 'hidden');
+        });
+    }, 2500);
+
+    $toast.hover(
+        function() {
+            clearTimeout(timeoutId);
+        },
+        function() {
+            timeoutId = setTimeout(function() {
+                $toast.animate({
+                    opacity: 0,
+                    bottom: '0'
+                }, 400, function() {
+                    $toast.css('visibility', 'hidden');
+                });
+            }, 2500);
+        }
+    );
+}
+
 $(document).ready(function() {
-  function showToast(message, iconClass) {
-      var $toast = $('#toast');
-      var $message = $toast.find('.message');
-      var $icon = $toast.find('.icon-box');
-
-      $message.text(message);
-      $icon.removeClass().addClass('icon-box ' + iconClass);
-
-      $toast.css({
-          opacity: 0,
-          bottom: '0',
-          visibility: 'visible'
-      });
-
-      $toast.animate({
-          opacity: 1,
-          bottom: '30px'
-      }, 400);
-
-      var timeoutId = setTimeout(function() {
-          $toast.animate({
-              opacity: 0,
-              bottom: '0'
-          }, 400, function() {
-              $toast.css('visibility', 'hidden');
-          });
-      }, 2500);
-
-      $toast.hover(
-          function() {
-              clearTimeout(timeoutId);
-          },
-          function() {
-              timeoutId = setTimeout(function() {
-                  $toast.animate({
-                      opacity: 0,
-                      bottom: '0'
-                  }, 400, function() {
-                      $toast.css('visibility', 'hidden');
-                  });
-              }, 2500);
-          }
-      );
-  }
 
   if (typeof session_error !== 'undefined') {
       showToast(session_error, IconTypes.ERROR);
@@ -525,7 +647,6 @@ $(document).ready(function() {
       }
 
       window.history.pushState({}, '', currentUrl);
-      console.log('URL оновлено:', currentUrl.toString());
   });
 });
 

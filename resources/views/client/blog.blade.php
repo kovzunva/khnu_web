@@ -25,7 +25,7 @@
                     <a class="dropdown-item" href="{{route('blog.editForm',$blog->id)}}">{{ __('Редагувати') }}</a>
                     @endif
                     <a class="dropdown-item confirm-link" href="{{route('blog.del',$blog->id)}}"
-                    data-message="{{ __('Ви впевнені, що хочете видалити блог «'.$blog->title.'»?') }}">{{ __('Видалити') }}</a>
+                    data-message="{{ __('Ви впевнені, що хочете видалити блог «'.$blog->name.'»?') }}">{{ __('Видалити') }}</a>
                 </div>
             </div>
         @endif  

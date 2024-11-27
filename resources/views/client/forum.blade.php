@@ -29,7 +29,7 @@
 				@if ($forum && $img)						
 					<img src="{{ asset($img) }}" alt="Зображення форуму">
 				@else
-					<div class="work-without-img">
+					<div class="work-without-img square">
 						<span>-</span>						
 					</div>
 				@endif	

@@ -19,7 +19,7 @@
             <input type="text" name="keywords" value="{{ $faq ? $faq->keywords : '' }}">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 align-center gap-1">
             <label for="" class="form-label">Порядковий індекс</label>
             <input type="text" name="sort_index" class="number" value="{{ $faq ? $faq->sort_index : '900' }}" maxlength="3">
         </div>
