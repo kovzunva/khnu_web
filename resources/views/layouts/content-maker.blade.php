@@ -2,9 +2,7 @@
 
 @section('aside')
 	@foreach(config('menu.content_maker_links') as $link)
-		<a href="{{ $link['url'] }}" class="">
-			{{ $link['text'] }}
-		</a>
+		<a href="{{ $link['url'] }}" class="">{{ $link['text'] }}</a>
 		<div class="line"></div>
 	@endforeach
 	@if (auth()->check() && auth()->user()->hasPermission('content-make'))

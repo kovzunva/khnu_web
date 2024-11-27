@@ -10,11 +10,7 @@
 			</div>
 
 			{{-- Сортування --}}
-			@include('components.sort')	
-
-			<div class="col-auto pl-1 pr-1">					
-				<a href="{{ route('recommendations') }}" class="base-btn ">Рекомендації книг</a>					
-			</div>			
+			@include('components.sort')			
 		</div>
 	</form>
 	<hr>
@@ -29,9 +25,7 @@
 				@if (auth()->check())						
 					<div class="col-auto align-center">
 						<b>
-							@if (auth()->user()->id!=$profile->id)								
-								Орієнтирність: {{ $profile->orienter }}
-							@else
+							@if (auth()->user()->id==$profile->id)
 								(це ви, якщо що)
 							@endif
 						</b>

@@ -9,7 +9,6 @@ class ProfileService extends BaseItemService
 {
     public $table = "users";
     public $sort_options = [
-        1 => ['name' => 'За орієнтирністю', 'sql' => 'orienter'],
         2 => ['name' => 'За датою реєстрації', 'sql' => 'id'],
         3 => ['name' => 'За ім\'ям', 'sql' => 'name'],
     ];

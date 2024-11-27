@@ -1292,15 +1292,18 @@ input[type="radio"].radio-sort + label:hover {
     box-shadow: var(--small-shadow);
 }
 
+.input-group{
+    flex-wrap: nowrap;
+}
+
 .input-group input[type='text'] {
     position: relative;
     flex: 1 1 auto;
-    width: 1%;
-    min-width: 0;
 }
 .input-with-btt{
     border-right: none !important;
-    border-radius:5px 0 0  5px !important;
+    border-radius: 5px 0 0  5px !important;
+    flex: 1;
 }
 
 input[type='file']{
@@ -1396,6 +1399,7 @@ ul label{
 .open-select-btn .options{
     right: 0;
     left: unset;
+    min-width: 300px;
 }
 
 .options {
@@ -2035,7 +2039,8 @@ button.with-spinner:hover::after{
 }
 
 /* small styles */
-.hide { display: none !important; }
+.hide { display: none; }
+.hide-imp { display: none !important; }
 .show { display: block !important; }
 .hide-post{ position: absolute; opacity: 0; z-index: -1; }
 .rel { position: relative; }

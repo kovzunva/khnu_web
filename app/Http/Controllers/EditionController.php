@@ -199,6 +199,16 @@ class EditionController extends Controller
 
         // Картинки 
         try{
+            // обкладинка
+            $img = $request->input('img_pass');
+            if ($img){
+                if (ImageService::getImg('edition',$id,0))
+                    ImageService::delImg(ImageService::getImg('edition',$id, 0));
+                $mes = ImageService::saveImg($img,'edition',$id);
+                if ($mes!='') $error .= $mes.' ';
+            }
+
+            // додавання
             $imgs = $request->input('imgs');
             if ($imgs)
             foreach ($imgs as $img){
@@ -431,9 +441,9 @@ class EditionController extends Controller
                 // обкладинка
                 $img = $request->input('img_pass');
                 if ($img){
-                    if (ImageService::getImg('edition',$edition->id,0,'cover'))
-                        ImageService::delImg(ImageService::getImg('edition',$edition->id, 0,'cover'));
-                    $mes = ImageService::saveImg($img,'edition',$edition->id,'cover');
+                    if (ImageService::getImg('edition',$edition->id,0))
+                        ImageService::delImg(ImageService::getImg('edition',$edition->id, 0));
+                    $mes = ImageService::saveImg($img,'edition',$edition->id);
                     if ($mes!='') $error .= $mes.' ';
                 }
 
@@ -504,6 +514,9 @@ class EditionController extends Controller
                     $illustrators[] = $person;
                 }
             } 
+
+            $edition->img = ImageService::getImg('edition',$edition->id);
+
             return view('content-maker.edition-form', [
                 'title' => 'Майстерня - Редагування видання',
                 'edition' => $edition,

@@ -577,11 +577,7 @@ $(document).ready(function() {
     
         // Картинка
         if (edition.img !== '') {  
-            let containerImg = document.getElementById('container_img');
-            let imgPasses = document.getElementById('img_passes');   
-            containerImg.innerHTML=''; 
-            imgPasses.innerHTML='';
-            PrintNewImgEdit(edition.img, containerImg, imgPasses);
+            setImgToUpload(edition.img)
         }
 
         hideLoading();
@@ -985,6 +981,34 @@ function PrintNewImgEdit(imageURL, containerImg, imgPasses){
     imgPathInput.name = 'imgs[]';
     imgPasses.appendChild(imgPathInput);
 }
+
+function setImgToUpload(imageUrl){
+    const containerElement = $('.upload-img-container');
+    const preview = containerElement.find('.img-preview');
+    var innerContainer = containerElement.find('.inner-inner-container');
+    const fileInput = containerElement.find('.img-pass');
+
+    // Перевірка на валідність URL перед установкою зображення
+    if (typeof imageUrl !== 'string' || !imageUrl.startsWith('data:image') && !isValidUrl(imageUrl)) {
+        showToast("Недопустимий шлях до зображення: "+imageUrl);
+        return;
+    }
+
+    preview.attr('src', imageUrl);
+    preview.show();
+    innerContainer.hide();
+    fileInput.val(imageUrl);
+}
+
+// Допоміжна функція для перевірки на коректність URL
+function isValidUrl(url) {
+    try {
+        new URL(url);
+        return true;
+    } catch (_) {
+        return false;
+    }
+  }
 
 // Перевірка радіобатонів
 function CheckRadioButtons(){

@@ -140,6 +140,7 @@
                             @endforeach
                             @if (auth()->check() && auth()->user()->hasPermission('admin'))
                                 <a href="{{ route('adminka') }}" class="">Адмінка</a>
+                                <div class="line"></div>
                             @endif
                         </div>
 
@@ -164,13 +165,6 @@
                             @endif
                             <div class="d-flex gap-1 content-center mt-1 mb-3">
                                 <div>© 2024 Щопочитайка</div>
-                                <div>
-                                    @php
-                                        $currentLocale = App::currentLocale();
-                                    @endphp
-                                    <a href="{{ route('set-locale', 'uk') }}" @if($currentLocale == 'uk') class="underline" @endif>укр</a> |
-                                    <a href="{{ route('set-locale', 'en') }}" @if($currentLocale == 'en') class="underline" @endif>en</a>
-                                </div>
                             </div>
                         </footer>
                     </div>

@@ -12,7 +12,6 @@ return [
 
     'profile_links' => [
         ['text' => 'Профіль', 'url' => '/profile', 'icon' => 'fa-solid fa-user'],
-        ['text' => 'Сповіщення', 'url' => '/notifications', 'icon' => 'fa-solid fa-users'],
         ['text' => 'Відгуки', 'url' => '/profile/reviews', 'icon' => 'fa-solid fa-house'],
         ['text' => 'Полички', 'url' => '/profile/shelves', 'icon' => 'fa-solid fa-house'],
         ['text' => 'Блоги', 'url' => '/profile/blogs', 'icon' => 'fa-solid fa-feather'],

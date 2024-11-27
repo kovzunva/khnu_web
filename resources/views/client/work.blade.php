@@ -480,7 +480,7 @@
 				</section>			
 			@endif
 			
-			@if (!$work->quotes)
+			@if (count($work->quotes)<=0)
 				<p>Нема цитат.</p>
 			@endif
 		</div>
@@ -488,7 +488,7 @@
 		{{-- Видання --}}
 		<div class="to-show-content {{ $tab=='editions'? '':'hide' }}" id="editions">
 
-			@if ($work->editions)				
+			@if ($work->editions && count($work->editions)>0)				
 				<div class="images-box">					
 					@foreach($work->editions as $edition)
 						<div>

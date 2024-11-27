@@ -26,7 +26,7 @@
                 @csrf
                 <label for="">Сервіси для імпорту: YAKABOO, Наш Формат, Vivat, Книгарня "Є"</label>
                 <div class="input-group mb-3 mt-1">
-                    <input type="text" class="input-with-btt enter-btn" id="url_import" placeholder="URL сторінки" value="https://www.yakaboo.ua/ua/muzichna-skrin-ka-tom-1-laskavo-prosimo-v-pandoriju.html?sc_content=26389_r1475v1876">
+                    <input type="text" class="input-with-btt enter-btn" id="url_import" placeholder="URL сторінки" value="">
                     <button class="btt-with-input" type="button" id="btn_url_import">Імпортувати</button>
                 </div>
                 <div class="error-text hide" id="error_import">Помилка імпорту</div>
@@ -350,39 +350,7 @@
         {{-- Зображення --}}
         <div>
             <div class="header-box">Зображення</div>
-            @include('components.upload-img', ['img' => null, 'size' => 'відповідне до видання'])
-            {{-- <div class="mb-3">
-                <input type="file" id="file_img" accept="image/*">
-            </div>
-            <div class="input-group mb-3">
-                <input type="text" class="input-with-btt enter-btn" id="url_img" placeholder="URL зображення">
-                <button class="btt-with-input" type="button" id="btn_url_img">Додати</button>
-            </div>
-
-            <input type="hidden" name="main_img" value="{{ $edition ? $edition->main_img : '0' }}">
-            <div class="container hide" id="img_passes">
-            </div> --}}
-
-            {{-- Виведення зображень --}}
-            {{-- <div class="container">
-                <div class="d-flex" id="container_img">
-                    @if ($edition && $imgs_edit)
-                    @foreach ($imgs_edit as $index => $img_edit)
-                        <div class="edit-img-container rel">     
-                            <img src="{{ asset($img_edit) }}" alt="{{ $edition->name }}">
-                            <img src="{{ asset('svg/close.svg') }}" class="icon top-right-icon saved-img-del-btn pointer" data-img="{{ $img_edit }}" alt="Видалити зображенння" title="Видалити зображенння"> --}}
-                            {{-- <div class="edit-img-items row">
-                                <div class="col-auto p-1">                                        
-                                    <input type="radio" name="is_main_img" id="is_main_img_{{ $index }}"
-                                    {{$edition->main_img == $index ? 'checked' : '' }}>
-                                    <label for="is_main_img_{{ $index }}">Головна</label>
-                                </div>
-                            </div> --}}
-                        {{-- </div>
-                    @endforeach
-                    @endif
-                </div>
-            </div> --}}
+            @include('components.upload-img', ['img' => $edition? $edition->img : null, 'size' => 'відповідне до видання'])
         </div>
         
 

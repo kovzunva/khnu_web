@@ -414,6 +414,7 @@ function setPreviewImage(el, imageUrl) {
   }
 
   preview.attr('src', imageUrl);
+  preview.show();
   innerContainer.hide();
   fileInput.val(imageUrl);
 }
