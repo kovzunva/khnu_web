@@ -99,7 +99,7 @@ class ReviewController extends Controller
                     WHERE w.id = ".$request->input('w_id')."
                     GROUP BY w.id, w.name");   
                 if ($work){      
-                    $work = $work[0]; 
+                    $work = $work[0];
                 }
             }
             return redirect()->back()->with('success', 'Відгук додано успішно')->with('scroll-to', 'work_tabs');    

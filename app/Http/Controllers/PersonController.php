@@ -135,7 +135,8 @@ class PersonController extends Controller
             if (isset($insertedId) && $insertedId) return redirect()->route('person.editForm', ['id' => $insertedId])->with('error', $error);
             else return redirect()->back()->with('error', $error);
         }
-        else return redirect()->route('person', ['id' => $insertedId])->with('success', 'Персону додано успішно');    
+        else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('person', ['id' => $insertedId])->with('success', 'Персону додано успішно');
+        else return redirect()->route('person.editForm', ['id' => $insertedId])->with('success', 'Персону додано успішно');    
     }
     
     public function edit(Request $request, $id){
@@ -198,7 +199,7 @@ class PersonController extends Controller
                 $img = $request->input('img_pass');
                 if ($img){
                     if (ImageService::getImg('person',$person->id))
-                    ImageService::delImg(ImageService::getImg('person',$person->id));
+                        ImageService::delImg(ImageService::getImg('person',$person->id));
                     $mes = ImageService::saveImg($img,'person',$person->id);
                     if ($mes!='') $error .= $mes.' ';
                 }
@@ -208,7 +209,8 @@ class PersonController extends Controller
             }
 
             if ($error!='') return redirect()->back()->with('error', $error);
-            else return redirect()->route('person',['id' => $id])->with('success', 'Зміни внесено успішно.');
+            else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('person',['id' => $id])->with('success', 'Зміни внесено успішно.');
+            else return redirect()->route('person.editForm',['id' => $id])->with('success', 'Зміни внесено успішно.');
         }
         else {      
             $birthdate = DateService::formatDateFromInt($person->birthdate);
@@ -402,6 +404,10 @@ class PersonController extends Controller
             ]);  
 
             $response['success'] = 'Персону "'.$request->input('name').' | '.$request->input('is_avtor').'" додано успішно';
+            $person = new \stdClass();
+            $person->id = $insertedId;
+            $person->name = $request->input('name');
+            $response['person'] = $person;
         }
         catch (\Exception $e) {
             $response['error'] = 'Помилка при вставці даних. '.$e;

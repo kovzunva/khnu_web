@@ -42,6 +42,7 @@ class AdminController extends Controller
         $languages = DB::select("SELECT * FROM language ORDER BY name");
         $countries = DB::select("SELECT * FROM country ORDER BY name");
         $blog_categories = DB::select("SELECT * FROM blog_categories ORDER BY name");
+        $forum_tematics = DB::select("SELECT * FROM forum_tematics ORDER BY name");
         $types_of_cover = DB::select("SELECT * FROM type_of_cover ORDER BY name");
 
         return view('admin.categories',[
@@ -50,6 +51,7 @@ class AdminController extends Controller
             'languages' => $languages,
             'countries' => $countries,
             'blog_categories' => $blog_categories,
+            'forum_tematics' => $forum_tematics,
             'types_of_cover' => $types_of_cover,
         ]);
     }

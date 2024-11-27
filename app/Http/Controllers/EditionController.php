@@ -214,9 +214,8 @@ class EditionController extends Controller
             if ($id) return redirect()->route('edition.editForm', ['id' => $id])->with('error', $error);
             else return redirect()->back()->with('error', $error);
         }
-        else {
-            return redirect()->route('edition', ['id' => $id])->with('success', 'Видання додано успішно');    
-        }
+        else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('edition', ['id' => $id])->with('success', 'Видання додано успішно');
+        else return redirect()->route('edition.editForm', ['id' => $id])->with('success', 'Видання додано успішно');
     }
     
     public function edit(Request $request, $id){ 
@@ -429,11 +428,23 @@ class EditionController extends Controller
 
             // Картинки 
             try{
+                // обкладинка
+                $img = $request->input('img_pass');
+                if ($img){
+                    if (ImageService::getImg('edition',$edition->id,0,'cover'))
+                        ImageService::delImg(ImageService::getImg('edition',$edition->id, 0,'cover'));
+                    $mes = ImageService::saveImg($img,'edition',$edition->id,'cover');
+                    if ($mes!='') $error .= $mes.' ';
+                }
+
+                // видалення
                 $del_imgs = $request->input('del_imgs');
                 if ($del_imgs)
                 foreach ($del_imgs as $img){
                     ImageService::delImg($img);
                 }
+
+                // додавання
                 $imgs = $request->input('imgs');
                 if ($imgs)
                 foreach ($imgs as $img){
@@ -446,7 +457,8 @@ class EditionController extends Controller
             }
 
             if ($error!='') return redirect()->back()->with('error', $error);
-            else return redirect()->route('edition',$id)->with('success', 'Зміни внесено успішно.');
+            else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('edition',$id)->with('success', 'Зміни внесено успішно.');
+            else return redirect()->route('edition.editForm',$id)->with('success', 'Зміни внесено успішно.');
         }
         else {
             $languages = DB::select('SELECT * FROM language ORDER BY name');   

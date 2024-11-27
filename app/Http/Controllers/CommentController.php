@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Comment;
+use App\Models\Chat;
 use App\Models\Notification;
 
 class CommentController extends Controller
@@ -26,8 +27,8 @@ class CommentController extends Controller
             'user_id' => $user_id,
             'created_at' => now(),
         ]);
-
-        if($request->input('answer_to')){
+        
+         if($request->input('answer_to')){
             $comment_to_answer = Comment::find($request->input('answer_to'));
             $user = $comment_to_answer->user;
             if ($user!=auth()->user()){
@@ -77,7 +78,7 @@ class CommentController extends Controller
                 return redirect()->back()->with('error', 'Ви не можете видалити це повідомлення.');
             }
         }
-        $comment->delete();
+        $comment->delete();        
             
         if ($comment->answer_to) {
             $comment_to_answer = Comment::find($comment->answer_to);

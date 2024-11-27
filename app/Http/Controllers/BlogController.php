@@ -108,6 +108,7 @@ class BlogController extends Controller
                 ]);
 
                 return redirect()->route('blog', ['id' => $blog->id])->with('success', 'Зміни внесено успішно.');
+
             }
             catch (\Exception $e) {
                 return redirect()->back()->with('error', 'Помилка при збереженні змін.');

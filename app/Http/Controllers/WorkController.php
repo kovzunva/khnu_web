@@ -176,10 +176,11 @@ class WorkController extends Controller
         }
 
         if ($error!='') {
-            if (isset($id)) return redirect()->route('work.edit', ['id' => $id])->with('error', $error);
+            if (isset($id)) return redirect()->route('work.editForm', ['id' => $id])->with('error', $error);
             else return redirect()->back()->with('error', $error);
         }
-        else return redirect()->route('work', ['id' => $id])->with('success', 'Твір додано успішно');    
+        else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('work', ['id' => $id])->with('success', 'Твір додано успішно');
+        else return redirect()->route('work.editForm', ['id' => $id])->with('success', 'Твір додано успішно');
     }
     
     public function edit(Request $request, $id){
@@ -328,7 +329,8 @@ class WorkController extends Controller
             }
 
             if ($error!='') return redirect()->back()->with('error', $error);
-            else return redirect()->route('work',$id)->with('success', 'Зміни внесено успішно.');
+            else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('work',$id)->with('success', 'Зміни внесено успішно.');
+            else return redirect()->route('work.editForm',$id)->with('success', 'Зміни внесено успішно.');
         }
         else {      
             $genres = DB::select('SELECT * FROM genre ORDER BY name');
@@ -413,8 +415,9 @@ class WorkController extends Controller
         $avtor = $request->input('avtor');
         
         if ($name && $avtor){
-            $name = is_string($name) ? "%" . str_replace("'", "", $name) . "%" : "%" . implode('%', array_map('str_replace', ["'", ""], $name)) . "%";
-            $avtor = is_string($avtor) ? "%" . str_replace("'", "", $avtor) . "%" : "%" . implode('%', array_map('str_replace', ["'", ""], $avtor)) . "%";
+            $name = is_string($name) ? "%" . str_replace("'", "", $name) . "%" : "%" . implode('%', array_map(function($n) { return str_replace("'", "", $n); }, $name)) . "%";
+            $avtor = is_string($avtor) ? "%" . str_replace("'", "", $avtor) . "%" : "%" . implode('%', array_map(function($a) { return str_replace("'", "", $a); }, $avtor)) . "%";
+        
             
             // $results = DB::select("
             //     SELECT w.name AS name, w.id as id, CONCAT('/work/', w.id) AS url
@@ -476,7 +479,6 @@ class WorkController extends Controller
                         'av_id' => $avtor_work,
                     ]);
                 }
-                $response['success'] = 'Видавництво "'.$request->input('name').'" додано успішно';
             }
             catch (\Exception $e) {
                 $response['error'] .= 'Помилка при обробці авторства твору. ';
@@ -492,7 +494,11 @@ class WorkController extends Controller
             catch (\Exception $e) {
                 $response['error'] .= 'Помилка при обробці анотації. ';
             }
-            $response['success'] = 'Твір "'.$request->input('name').'" додано успішно |'.$request->input('genre_id');
+            $response['success'] = 'Твір "'.$request->input('name').'" додано успішно | '.$request->input('genre_id');
+            $work = new \stdClass();
+            $work->id = $id;
+            $work->name = $request->input('name');
+            $response['work'] = $work;
         }
         catch (\Exception $e) {
             $response['error'] = 'Помилка при вставці даних. '.$e;
@@ -636,5 +642,55 @@ class WorkController extends Controller
         
         if ($error!='') return redirect()->back()->with('error', $error);
         else return redirect()->back()->with('success', 'Твір класифіковано успішно');    
+    }
+
+    public function recommendations(Request $request, $page = 1){
+        if (count(auth()->user()->orientators())==0) $items = null;
+        else $items = $this->service->GetRecommendations($request);
+        
+        return view('client.recommendations',[
+            'title' => 'Щопочитайка',
+            'works' => $items,
+            'service' => $this->service,
+            'has_orientators' => true,
+        ]);
+    } 
+
+    public function addSimilar(Request $request){        
+
+        $error = '';
+        try {
+            $user = auth()->user();
+            $id = DB::table('similar_works')->insertGetId([
+                'w_name' => $request->input('w_name'),
+                'w_similar' => $request->input('w_similar'),
+                'reason' => $request->input('reason'),
+                'user_id' => $user->id,
+                'created_at' => new \DateTime(),
+            ]);
+        }
+        catch (\Exception $e) {
+            $error .= 'Помилка при додаванні схожого твору. ';
+        }        
+
+
+        if ($error!='') return redirect()->back()->with('error', $error);
+        else return redirect()->back()->with('success', 'Схожий твір додано успішно');    
+    }
+
+    public function delSimilar($w_id,$w_similar_id){   
+        $error = '';
+        $similar = DB::table('similar_works')->where('w_id', $w_id)->where('w_similar_id', $w_similar_id)->first(); 
+
+        if (auth()->user()->id != $similar->user_id) abort(404);
+
+        try{
+            DB::table('similar_works')->where('w_id', $w_id)->where('w_similar_id', $w_similar_id)->delete();
+        }
+        catch (\Exception $e) {
+            $error .= 'Помилка при видаленні схожого твору. ';
+        }  
+        if ($error!='') return redirect()->back()->with('error', $error);
+        else return redirect()->back()->with('success', 'Схожий твір видалено успішно');
     }
 }

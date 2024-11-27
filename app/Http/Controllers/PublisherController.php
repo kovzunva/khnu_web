@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\LogService;
 use App\Services\PublisherService;
+use App\Services\ImageService;
 use App\Models\User;
 
 class PublisherController extends Controller
@@ -28,12 +29,13 @@ class PublisherController extends Controller
     }  
 
     public function show(Request $request, $id){  
-        $item = $this->service->GetItem($id,$request);  
-        $can_edit = $this->service->CanEdit($item); 
+        $publisher = $this->service->GetItem($id,$request);  
+        $publisher->img = ImageService::getImg('publisher',$publisher->id);   
+        $can_edit = $this->service->CanEdit($publisher); 
         
         return view('client.publisher',[
-            'title' => $item->name,
-            'publisher' => $item,
+            'title' => $publisher->name,
+            'publisher' => $publisher,
             'can_edit' => $can_edit,
         ]);
     }  
@@ -74,7 +76,6 @@ class PublisherController extends Controller
     }
 
     public function add(Request $request){
-
         $error = '';
         try {
             $name = $request->input('name');
@@ -104,7 +105,8 @@ class PublisherController extends Controller
             if ($insertedId) return redirect()->route('publisher.editForm', ['id' => $insertedId])->with('error', $error);
             else return redirect()->back()->with('error', $error);
         }
-        else return redirect()->route('publisher.editForm', ['id' => $insertedId])->with('success', 'Видавництво додано успішно');    
+        else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('publisher', ['id' => $insertedId])->with('success', 'Видавництво додано успішно.');
+        else return redirect()->route('publisher.editForm', ['id' => $insertedId])->with('success', 'Видавництво додано успішно');
     }
     
     public function edit(Request $request, $id){      
@@ -142,11 +144,27 @@ class PublisherController extends Controller
                 $error .= 'Помилка при вставці даних. ';
             }
 
+            // Картинка
+            try{
+                $img = $request->input('img_pass');
+                if ($img){
+                    if (ImageService::getImg('publisher',$publisher->id))
+                        ImageService::delImg(ImageService::getImg('publisher',$publisher->id));
+                    $mes = ImageService::saveImg($img,'publisher',$publisher->id);
+                    if ($mes!='') $error .= $mes.' ';
+                }
+            }
+            catch (\Exception $e) {
+                $error .= 'Помилка при обробці зображення. ';
+            }
+
             if ($error!='') return redirect()->back()->with('error', $error);
+            else if ($request->input('submit') == "Зберегти та переглянути") return redirect()->route('publisher', ['id' => $id])->with('success', 'Зміни внесено успішно.');
             else return redirect()->back()->with('success', 'Зміни внесено успішно.');
         }
         else {      
-            $countries = DB::select('SELECT * FROM country ORDER BY name');    
+            $countries = DB::select('SELECT * FROM country ORDER BY name');   
+            $publisher->img_edit = ImageService::getImg('publisher',$publisher->id);   
             return view('content-maker.publisher-form', [
                 'title' => 'Майстерня - Редагування видавництва',
                 'publisher' => $publisher,
@@ -184,6 +202,10 @@ class PublisherController extends Controller
             ]);
             $error = LogService::add($insertedId,'publisher','add');
             $response['success'] = 'Видавництво "'.$request->input('name').'" додано успішно';
+            $publisher = new \stdClass();
+            $publisher->id = $insertedId;
+            $publisher->name = $name;
+            $response['publisher'] = $publisher;
         }
         catch (\Exception $e) {
             $response['error'] = 'Помилка при вставці даних. '.$e;
